@@ -9,16 +9,24 @@ app.get('/', (req, res) => {
   res.send('Hello World!!!!!')
 })
 
-app.get("/api/products", async (req, res) => {
+// app.get("/api/products", async (req, res) => {
+//   try {
+//       const response = await axios.get("https://api.printful.com/products")
+//       res.json(response.data)
+//   }
+//   catch (err) {
+//       console.log(err)
+//   }
+// })
+
+app.post("/api/nonces-id", async (req, res) => {
   try {
-      const response = await axios.get("https://api.printful.com/products")
-      res.json(response.data)
+    res.send('Hello World!!!!!')
   }
   catch (err) {
       console.log(err)
   }
 })
-
 app.get("/api/nonces", async (req, res) => {
   try {
     const token = 'xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS';
