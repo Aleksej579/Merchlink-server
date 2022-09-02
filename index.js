@@ -3,7 +3,9 @@ const app = express()
 const port = 3000
 const axios = require('axios');
 const cors = require('cors');
-app.use(cors())
+var bodyParser = require('body-parser');
+app.use(cors());
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
   res.send('Hello World!!!!!')
@@ -19,14 +21,15 @@ app.get('/', (req, res) => {
 //   }
 // })
 
-app.post("/api/nonces-id", async (req, res) => {
-  try {
-    res.send('Hello World!!!!!')
-  }
-  catch (err) {
-      console.log(err)
-  }
-})
+app.post('/api/test', function(req, res) {
+  // console.log(req.body);
+  // console.log(true);
+  if (!req.body) return res.sendStatus(400);
+  console.log(req.body);
+  res.end();
+});
+
+
 app.get("/api/nonces", async (req, res) => {
   try {
     const token = 'xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS';
