@@ -21,16 +21,17 @@ app.get('/', (req, res) => {
 //   }
 // })
 
-app.post('/api/test', function(req, res) {
-  // console.log(req.body);
-  // console.log(true);
-  if (!req.body) return res.sendStatus(400);
-  console.log(req.body);
-  res.end();
+
+app.post('/api/id', function(req, res) {
+  res.json();
+});
+app.get('/api/id', function(req, res) {
+  // res.send('true');
+  res.json();
 });
 
 
-app.get("/api/nonces", async (req, res) => {
+app.get("/api/nonces/:userId", async (req, res) => {
   try {
     const token = 'xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS';
     const headers = {
@@ -38,7 +39,8 @@ app.get("/api/nonces", async (req, res) => {
       'Authorization': `Bearer ${token}`
     }
     const body = {
-        "external_product_id": "307"
+        // "external_product_id": "307"
+        "external_product_id": `${req.params.userId}`
     }
     const response = await axios.post("https://api.printful.com/embedded-designer/nonces", body, { headers })
     res.json(response.data)
