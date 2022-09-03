@@ -11,25 +11,12 @@ app.get('/', (req, res) => {
   res.send('Hello World!!!!!')
 })
 
-// app.get("/api/products", async (req, res) => {
-//   try {
-//       const response = await axios.get("https://api.printful.com/products")
-//       res.json(response.data)
-//   }
-//   catch (err) {
-//       console.log(err)
-//   }
-// })
-
-
 app.post('/api/id', function(req, res) {
   res.json();
 });
 app.get('/api/id', function(req, res) {
-  // res.send('true');
   res.json();
 });
-
 
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
@@ -39,7 +26,6 @@ app.get("/api/nonces/:userId", async (req, res) => {
       'Authorization': `Bearer ${token}`
     }
     const body = {
-        // "external_product_id": "307"
         "external_product_id": `${req.params.userId}`
     }
     const response = await axios.post("https://api.printful.com/embedded-designer/nonces", body, { headers })
@@ -49,11 +35,6 @@ app.get("/api/nonces/:userId", async (req, res) => {
       console.log(err)
   }
 })
-
-
-
-
-
 
 app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
