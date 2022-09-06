@@ -6,17 +6,7 @@ const cors = require('cors');
 var bodyParser = require('body-parser');
 app.use(cors());
 app.use(bodyParser.json());
-
-app.get('/', (req, res) => {
-  res.send('Hello World!!!!!')
-})
-
-app.post('/api/id', function(req, res) {
-  res.json();
-});
-app.get('/api/id', function(req, res) {
-  res.json();
-});
+// ?preview_theme_id=134752338164
 
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
@@ -36,16 +26,16 @@ app.get("/api/nonces/:userId", async (req, res) => {
   }
 })
 
+let arrOrder = [];
+app.post('/api/orderprintful', function(req, res) {
+  req.body;
+  arrOrder.push(req.body);
+  res.json(arrOrder);
 
-
-app.post('/api/order', function(req, res) {
-  res.json();
 });
-app.get('/api/order', function(req, res) {
-  res.json();
+app.get('/api/orderprintful', function(req, res) {
+  res.json(req.body);
 });
-
-
 
 app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
