@@ -36,6 +36,17 @@ app.get("/api/nonces/:userId", async (req, res) => {
   }
 })
 
+
+
+app.post('/api/order', function(req, res) {
+  res.json();
+});
+app.get('/api/order', function(req, res) {
+  res.json();
+});
+
+
+
 app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
 })
