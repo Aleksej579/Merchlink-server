@@ -31,10 +31,9 @@ app.post('/api/orderprintful', function(req, res) {
   req.body;
   arrOrder.push(req.body);
   res.json(arrOrder);
-
 });
 app.get('/api/orderprintful', function(req, res) {
-  res.json(req.body);
+  res.json(arrOrder);
 });
 
 app.get('*', (req, res) => {
