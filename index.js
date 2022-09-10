@@ -1,3 +1,5 @@
+const arrOrderJson = require('./data_order_shopify');
+
 const express = require('express')
 const app = express()
 const port = 3000
@@ -8,32 +10,113 @@ app.use(cors());
 app.use(bodyParser.json());
 // ?preview_theme_id=134752338164
 
+app.get("/", async (req, res) => {
+  res.send('Main page !');
+})
+
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
     const token = 'xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS';
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
-    }
-    const body = {
-        "external_product_id": `${req.params.userId}`
-    }
-    const response = await axios.post("https://api.printful.com/embedded-designer/nonces", body, { headers })
-    res.json(response.data)
+    };
+    const body = {"external_product_id": `${req.params.userId}`};
+    const response = await axios.post("https://api.printful.com/embedded-designer/nonces", body, { headers });
+    res.json(response.data);
   }
   catch (err) {
       console.log(err)
   }
 })
 
+let test = [];
+app.get("/api/template/:templateId", async (req, res) => {
+  if (req.params.templateId) {
+    try {
+      const productTemplates = await axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, {
+        headers: {
+          Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS'
+        }
+      });
+
+      const createTask = await axios.post(`https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
+        {
+          "variant_ids": productTemplates.data.result.available_variant_ids,
+          "format": "jpg",
+          "product_template_id": productTemplates.data.result.id
+        },
+        {
+          headers: {
+            'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
+            'X-PF-Store-ID': 5651474
+          }
+        }
+      );
+      res.json(createTask.data);
+      test.unshift(createTask.data.result.task_key);
+
+      const mockupGenerator = axios.get(`https://api.printful.com/mockup-generator/task?task_key=${createTask.data.result.task_key}`, 
+        {
+          headers: {
+            'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
+            'X-PF-Store-ID': 5651474
+          }
+        }
+      );
+      // res.json(mockupGenerator.data);
+    }
+    catch (err) {
+        console.log(err)
+    }
+  }
+})
+
+
 let arrOrder = [];
-app.post('/api/orderprintful', function(req, res) {
+app.post('/api/orderprintful', async function(req, res) {
+  res.send(test);
   req.body;
-  arrOrder.push(req.body);
-  res.json(arrOrder);
+  if (req.body) {
+
+
+
+    try {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
+        'X-PF-Store-ID': '5651474'
+      };
+      const body = {
+        "recipient": {
+          "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
+          "address1": `${req.body.customer.default_address.address1}`,
+          "city": `${req.body.customer.default_address.city}`,
+          "state_code": `${req.body.customer.default_address.province_code}`,
+          "country_code": `${req.body.customer.default_address.country_code}`,
+          "zip": `${req.body.customer.default_address.zip}`
+        },
+        "items": [{
+          "quantity": `${req.body.line_items[0].quantity}`,
+          "variant_id": 9430,
+          "files": [{
+            "placement": "embroidery_chest_left",
+            "url": "https://printful-upload.s3-accelerate.amazonaws.com/tmp/0149e231cd0c38e133690e411bec1947/printfile_embroidery_chest_left.png"
+          }]
+        }]
+      };
+      // const response = await axios.post("https://api.printful.com/orders", body, { headers });
+      arrOrder.unshift(response.data);
+      res.json(response.data);
+    }
+    catch (err) {
+        console.log(err);
+    }
+  }
 });
+
 app.get('/api/orderprintful', function(req, res) {
-  res.json(arrOrder);
+    res.json(arrOrder[0]);
 });
 
 app.get('*', (req, res) => {
