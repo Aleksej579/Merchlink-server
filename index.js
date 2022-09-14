@@ -16,6 +16,7 @@ app.get("/", async (req, res) => {
   res.send('Main page !');
 })
 
+// get NONCES to start customizer
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
     const token = 'xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS';
@@ -32,7 +33,7 @@ app.get("/api/nonces/:userId", async (req, res) => {
   }
 })
 
-// image
+// get IMAGE to change in DPP
 app.get('/api/image/:prodId', function(req, res) {
   try {
     axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {
@@ -46,6 +47,7 @@ app.get('/api/image/:prodId', function(req, res) {
   }
 });
 
+// get TASK_KEY to complete json order in next step
 app.get("/api/template/:templateId", async (req, res) => {
   if (req.params.templateId) {
     try {
@@ -66,18 +68,8 @@ app.get("/api/template/:templateId", async (req, res) => {
         }
       )
       }).then(resMockup => {
-        // const path = 'https://api.printful.com/mockup-generator/task?task_key=gt-405776728';
-        const path = `https://api.printful.com/mockup-generator/task?task_key=${resMockup.data.result.task_key}`;
-        // console.log(resMockup.data.result.task_key);
-        axios.get(path, {
-            headers: {
-              Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
-              'X-PF-Store-ID': 5651474
-            }
-          }).then(response => {
-            res.json(response.data);
-          })
-        })
+        res.json(resMockup.data.result.task_key);
+      })
     }
     catch (err) {
         console.log(err)
@@ -85,48 +77,54 @@ app.get("/api/template/:templateId", async (req, res) => {
   }
 })
 
-let arrOrder = [];
+// create json to send ORDER
 app.post('/api/orderprintful', async function(req, res) {
-  res.send(test);
-  req.body;
-  if (req.body) {
-    try {
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
-        'X-PF-Store-ID': '5651474'
-      };
-      const body = {
-        "recipient": {
-          "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
-          "address1": `${req.body.customer.default_address.address1}`,
-          "city": `${req.body.customer.default_address.city}`,
-          "state_code": `${req.body.customer.default_address.province_code}`,
-          "country_code": `${req.body.customer.default_address.country_code}`,
-          "zip": `${req.body.customer.default_address.zip}`
-        },
-        "items": [{
-          "quantity": `${req.body.line_items[0].quantity}`,
-          "variant_id": 9430,
-          "files": [{
-            "placement": "embroidery_chest_left",
-            "url": "https://printful-upload.s3-accelerate.amazonaws.com/tmp/0149e231cd0c38e133690e411bec1947/printfile_embroidery_chest_left.png"
+  try {
+    const key = req.body.line_items[0].properties.value || 'gt-407088560';
+    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${key}`, {
+        headers: {
+          Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
+          'X-PF-Store-ID': 5651474
+        }
+      }).then(response => {
+        // res.json(response.data);
+        const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
+          'X-PF-Store-ID': '5651474'
+        };
+        const body = {
+          "recipient": {
+            "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
+            "address1": `${req.body.customer.default_address.address1}`,
+            "city": `${req.body.customer.default_address.city}`,
+            "state_code": `${req.body.customer.default_address.province_code}`,
+            "country_code": `${req.body.customer.default_address.country_code}`,
+            "zip": `${req.body.customer.default_address.zip}`
+          },
+          "items": [{
+            "quantity": `${req.body.line_items[0].quantity}`,
+            "variant_id": `${response.data.result.printfiles[0].variant_ids}`,
+            "files": [{
+              "placement": `${response.data.result.printfiles[0].placement}`,
+              "url": `${response.data.result.printfiles[0].url}`
+            }]
           }]
-        }]
-      };
-      // const response = await axios.post("https://api.printful.com/orders", body, { headers });
-      arrOrder.unshift(response.data);
-      res.json(response.data);
-    }
-    catch (err) {
-        console.log(err);
-    }
+        };
+        axios.post("https://api.printful.com/orders", body, { headers })
+          .then((response) => {
+            res.json(response.data);
+          });
+      })
+  }
+  catch (err) {
+    console.log(err);
   }
 });
 
-app.get('/api/orderprintful', function(req, res) {
-    res.json(arrOrder[0]);
-});
+// app.get('/api/orderprintful', function(req, res) {
+//     res.json(arrOrder[0]);
+// });
 
 app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
