@@ -10,10 +10,33 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // ?preview_theme_id=134752338164
-// https://test-server-v2.vercel.app/
+// https://test-server-v2.vercel.app
+// https://merchlink.com/account?my_collections
+// https://merchlink.com/account?my_collections&product_id=123&template_id=gt-123
+
+
+
+
+// fetch('https://all-u-sportswear.myshopify.com/admin/api/2022-07/metafields.json', {
+//   method: 'POST',
+//   headers: {
+//     // "X-Shopify-Access-Token: {access_token}"
+//     'Content-Type': 'application/json'
+//   },
+//   body: JSON.stringify({
+//     "metafield":{
+//       "namespace":"customer_id",
+//       // "key":"collection_name",
+//       "key":"default",
+//       "value":"variant_id1:template_id1, variant_id2:template_id2"
+//     }
+//   })
+// }).then(res => res.json())
+//   .then(res => console.log(res));
+
 
 app.get("/", async (req, res) => {
-  res.send('Main page !');
+  res.send('Main page server customizer!');
 })
 
 // get NONCES to start customizer
@@ -30,6 +53,24 @@ app.get("/api/nonces/:userId", async (req, res) => {
   }
   catch (err) {
       console.log(err)
+  }
+})
+
+// get IMG from printful by GT-...
+app.get('/api/gtkey/:gtkey', function (req, res) {
+  try {
+    const key_gt = req.params.gtkey;
+    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${key_gt}`, {
+      headers: {
+        Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
+        'X-PF-Store-ID': 5651474
+      }
+    }).then(resp => {
+      res.json(resp.data);
+    });
+  }
+  catch (err) {
+      console.log(err);
   }
 })
 
@@ -75,12 +116,14 @@ app.get("/api/template/:templateId", async (req, res) => {
         console.log(err)
     }
   }
-})
+});
 
 // create json to send ORDER
+let arrOrder = []; //tesr request
 app.post('/api/orderprintful', async function(req, res) {
+  arrOrder.push(req.body) //tesr request
   try {
-    const key = req.body.line_items[0].properties.value || 'gt-407088560';
+    const key = req.body.line_items[0].properties.customize_detail_order || 'gt-407088560';
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${key}`, {
         headers: {
           Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
@@ -122,9 +165,9 @@ app.post('/api/orderprintful', async function(req, res) {
   }
 });
 
-// app.get('/api/orderprintful', function(req, res) {
-//     res.json(arrOrder[0]);
-// });
+app.get('/api/orderprintful', function(req, res) {
+    res.json(arrOrder); //tesr request
+});
 
 app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
