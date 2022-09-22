@@ -14,27 +14,6 @@ app.use(bodyParser.json());
 // https://merchlink.com/account?my_collections
 // https://merchlink.com/account?my_collections&product_id=123&template_id=gt-123
 
-
-
-
-// fetch('https://all-u-sportswear.myshopify.com/admin/api/2022-07/metafields.json', {
-//   method: 'POST',
-//   headers: {
-//     // "X-Shopify-Access-Token: {access_token}"
-//     'Content-Type': 'application/json'
-//   },
-//   body: JSON.stringify({
-//     "metafield":{
-//       "namespace":"customer_id",
-//       // "key":"collection_name",
-//       "key":"default",
-//       "value":"variant_id1:template_id1, variant_id2:template_id2"
-//     }
-//   })
-// }).then(res => res.json())
-//   .then(res => console.log(res));
-
-
 app.get("/", async (req, res) => {
   res.send('Main page server customizer!');
 })
@@ -119,9 +98,9 @@ app.get("/api/template/:templateId", async (req, res) => {
 });
 
 // create json to send ORDER
-let arrOrder = []; //tesr request
+let arrOrder = [];
 app.post('/api/orderprintful', async function(req, res) {
-  arrOrder.push(req.body) //tesr request
+  arrOrder.push(req.body)
   try {
     const key = req.body.line_items[0].properties.customize_detail_order || 'gt-407088560';
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${key}`, {
@@ -130,7 +109,6 @@ app.post('/api/orderprintful', async function(req, res) {
           'X-PF-Store-ID': 5651474
         }
       }).then(response => {
-        // res.json(response.data);
         const headers = {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
@@ -164,9 +142,29 @@ app.post('/api/orderprintful', async function(req, res) {
     console.log(err);
   }
 });
-
 app.get('/api/orderprintful', function(req, res) {
-    res.json(arrOrder); //tesr request
+    res.json(arrOrder);
+});
+
+// get & send data to metafields customer or shop
+let metafieldBody;
+app.post('/api/sendmetafield', async function(req, res) {
+  res.json(req.body);
+  metafieldBody = req.body;
+  try {
+    // const headers = {
+    //   'X-Shopify-Access-Token': `{access_token}`,
+    //   'Content-Type': 'application/json'
+    // };
+    // const body = req.body;
+    // axios.post("https://all-u-sportswear.myshopify.com/admin/api/2022-07/metafields.json", body, { headers });
+  }
+  catch (err) {
+    console.log(err);
+  }
+});
+app.get('/api/sendmetafield', function(req, res) {
+  res.json(metafieldBody);
 });
 
 app.get('*', (req, res) => {
