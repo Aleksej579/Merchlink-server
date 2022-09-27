@@ -151,7 +151,7 @@ let metafieldBody;
 app.post('/api/sendmetafield', async function(req, res) {
   try {
     const headers = {
-      'X-Shopify-Access-Token': `{access_token}`,
+      'X-Shopify-Access-Token': `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`,
       'Content-Type': 'application/json'
     };
     const customerId = req.body.metafield.namespace;
