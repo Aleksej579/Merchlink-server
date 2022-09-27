@@ -12,7 +12,7 @@ app.use(bodyParser.json());
 // ?preview_theme_id=134752338164
 // https://test-server-v2.vercel.app
 // https://merchlink.com/account?my_collections
-// https://merchlink.com/account?my_collections&product_id=123&template_id=gt-123
+// https://test-server-v2.vercel.app/api/sendmetafield
 
 app.get("/", async (req, res) => {
   res.send('Main page server customizer!');
@@ -149,15 +149,23 @@ app.get('/api/orderprintful', function(req, res) {
 // get & send data to metafields customer or shop
 let metafieldBody;
 app.post('/api/sendmetafield', async function(req, res) {
-  res.json(req.body);
-  metafieldBody = req.body;
   try {
-    // const headers = {
-    //   'X-Shopify-Access-Token': `{access_token}`,
-    //   'Content-Type': 'application/json'
-    // };
-    // const body = req.body;
-    // axios.post("https://all-u-sportswear.myshopify.com/admin/api/2022-07/metafields.json", body, { headers });
+    const headers = {
+      'X-Shopify-Access-Token': `{access_token}`,
+      'Content-Type': 'application/json'
+    };
+    const customerId = req.body.metafield.namespace;
+    const metaValue = req.body.metafield.value;
+    const body = {
+      "metafield": {
+        "namespace": "customer_id",
+        "key": "default_collectionName",
+        "value": metaValue
+      }
+    };
+    axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+    metafieldBody = body;
+    res.json(body);
   }
   catch (err) {
     console.log(err);
