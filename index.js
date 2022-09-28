@@ -166,7 +166,7 @@ app.post('/api/sendmetafield', function(req, res) {
         //   metafieldBody = `${req.body.metafield.value}`;
         // }
 
-        metafieldBody = `${req.body.metafield.value},`;
+        // metafieldBody = `${req.body.metafield.value},`;
 
         const headers = {
           'X-Shopify-Access-Token': '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',
