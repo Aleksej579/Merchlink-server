@@ -160,10 +160,10 @@ app.post('/api/sendmetafield', function(req, res) {
         // metafieldBody = response.data;
 
         newData = JSON.parse(response.data);
-        if (newData.metafields.length == 0) {
-          metafieldBody = `${req.body.metafield.value}`;
-        } else {
+        if ( newData.hasOwnProperty('.metafields') & newData.metafields.length != 0 ) {
           metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
+        } else {
+          metafieldBody = `${req.body.metafield.value}`;
         }
 
         const headers = {
