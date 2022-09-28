@@ -148,7 +148,7 @@ app.get('/api/orderprintful', function(req, res) {
 
 // get & send data to metafields customer
 let metafieldBody;
-app.post('/api/sendmetafield', async function(req, res) {
+app.post('/api/sendmetafield', function(req, res) {
   try {
     const customerId = req.body.metafield.namespace;
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
@@ -162,7 +162,7 @@ app.post('/api/sendmetafield', async function(req, res) {
         // } else {
         //   metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
         // }
-        // metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
+        metafieldBody = `${req.body.metafield.value},${response.data.metafields[0]?.value}`;
 
         // metafieldBody = `${req.body.metafield.value},`;
 
@@ -170,8 +170,8 @@ app.post('/api/sendmetafield', async function(req, res) {
           'X-Shopify-Access-Token': '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',
           'Content-Type': 'application/json'
         };
-        // const metaValue = metafieldBody;
-        const metaValue = `${req.body.metafield.value},${response.data.metafields[0].value ?? response.data.metafields[0].value}`;
+        const metaValue = metafieldBody;
+        // const metaValue = `${req.body.metafield.value},${response.data.metafields[0].value ?? response.data.metafields[0].value}`;
         const body = {
           "metafield": {
             "namespace": "customer_id",
