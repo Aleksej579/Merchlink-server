@@ -161,7 +161,8 @@ app.post('/api/sendmetafield', function(req, res) {
 
         newData = JSON.parse(response.data);
         if ( newData.hasOwnProperty('.metafields') & newData.metafields.length != 0 ) {
-          metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
+          // metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
+          metafieldBody = `${req.body.metafield.value},`;
         } else {
           metafieldBody = `${req.body.metafield.value}`;
         }
