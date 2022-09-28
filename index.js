@@ -162,9 +162,9 @@ app.post('/api/sendmetafield', async function(req, res) {
         // } else {
         //   metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
         // }
-        // metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
+        metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
 
-        metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value || null}`;
+        // metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value || null}`;
 
         const headers = {
           'X-Shopify-Access-Token': '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',
