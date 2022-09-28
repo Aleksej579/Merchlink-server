@@ -162,7 +162,7 @@ app.post('/api/sendmetafield', function(req, res) {
         // } else {
         //   metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
         // }
-        metafieldBody = `${req.body.metafield.value},${response.data.metafields[0]?.value}`;
+        metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
 
         // metafieldBody = `${req.body.metafield.value},`;
 
