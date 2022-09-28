@@ -148,26 +148,32 @@ app.get('/api/orderprintful', function(req, res) {
 
 // get & send data to metafields customer or shop
 let metafieldBody;
-app.post('/api/sendmetafield', function(req, res) {
+app.post('/api/sendmetafield', async function(req, res) {
   try {
-    const headers = {
-      'X-Shopify-Access-Token': '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',
-      'Content-Type': 'application/json'
-    };
     const customerId = req.body.metafield.namespace;
-    const metaValue = req.body.metafield.value;
-    const body = {
-      "metafield": {
-        "namespace": "customer_id",
-        "key": "collection_name",
-        "value": metaValue,
-        "type": "single_line_text_field"
+    axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
+      headers: {
+        'X-Shopify-Access-Token': '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'
       }
-    };
-    axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
-    // axios.put(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
-    metafieldBody = body;
-    res.json(body);
+    })
+      .then((response) => {
+        metafieldBody = `${response.data.metafields[0].value},${req.body.metafield.value}`;
+        const headers = {
+          'X-Shopify-Access-Token': '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',
+          'Content-Type': 'application/json'
+        };
+        const metaValue = metafieldBody;
+        const body = {
+          "metafield": {
+            "namespace": "customer_id",
+            "key": "collection_name",
+            "value": metaValue,
+            "type": "single_line_text_field"
+          }
+        };
+        axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+        res.json(response.data);
+    });
   }
   catch (err) {
     console.log(err);
