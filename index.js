@@ -171,7 +171,7 @@ app.post('/api/sendmetafield', async function(req, res) {
           'Content-Type': 'application/json'
         };
         // const metaValue = metafieldBody;
-        const metaValue = `${req.body.metafield.value},`;
+        const metaValue = `${req.body.metafield.value},${response.data.metafields[0].value ?? response.data.metafields[0].value}`;
         const body = {
           "metafield": {
             "namespace": "customer_id",
