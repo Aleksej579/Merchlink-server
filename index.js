@@ -1,5 +1,3 @@
-const arrOrderJson = require('./data_order_shopify');
-
 const express = require('express')
 const app = express()
 const port = 3000
@@ -9,16 +7,18 @@ var bodyParser = require('body-parser');
 app.use(cors());
 app.use(bodyParser.json());
 
-// ?preview_theme_id=134752338164
-// https://test-server-v2.vercel.app
-// https://merchlink.com/account?my_collections
-// https://test-server-v2.vercel.app/api/sendmetafield
-
 app.get("/", async (req, res) => {
-  res.send('Main page server customizer!');
+  res.send('Server');
+})
+app.get('*', (req, res) => {
+  res.status(500).json({ message: "error" })
 })
 
-// get NONCES to start customizer
+// ?preview_theme_id=134752338164
+// https://merchlink.com/account?my_collections
+// https://test-server-v2.vercel.app
+
+// NONCES
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
     const token = 'xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS';
@@ -35,11 +35,12 @@ app.get("/api/nonces/:userId", async (req, res) => {
   }
 })
 
-// get IMG from printful by GT-...
+// GT-IMAGE
 app.get('/api/gtkey/:gtkey', function (req, res) {
   try {
-    const key_gt = req.params.gtkey;
-    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${key_gt}`, {
+    // const key_gt = req.params.gtkey;
+    // axios.get(`https://api.printful.com/mockup-generator/task?task_key=${key_gt}`, {
+    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gtkey}`, {
       headers: {
         Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
         'X-PF-Store-ID': 5651474
@@ -53,7 +54,7 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
   }
 })
 
-// get IMAGE to change in DPP
+// IMAGE
 app.get('/api/image/:prodId', function(req, res) {
   try {
     axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {
@@ -97,7 +98,7 @@ app.get("/api/template/:templateId", (req, res) => {
   }
 });
 
-// create json to send ORDER
+// ORDER
 let arrOrder = [];
 app.post('/api/orderprintful', async function(req, res) {
   arrOrder.push(req.body)
@@ -146,8 +147,7 @@ app.get('/api/orderprintful', function(req, res) {
     res.json(arrOrder);
 });
 
-// get & send data to metafields customer
-let metafieldBody;
+// METAFIELDS
 app.post('/api/sendmetafield', function(req, res) {
   try {
     const customerId = req.body.metafield.namespace;
@@ -156,7 +156,6 @@ app.post('/api/sendmetafield', function(req, res) {
         'X-Shopify-Access-Token': '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'
       }
     }).then((response) => {
-        const metaValue = `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:''}`; //? value
         const headers = {
           'X-Shopify-Access-Token': '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',
           'Content-Type': 'application/json'
@@ -165,25 +164,18 @@ app.post('/api/sendmetafield', function(req, res) {
           "metafield": {
             "namespace": "customer_id",
             "key": "collection_name",
-            "value": metaValue,
+            "value": `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:''}`,
             "type": "single_line_text_field"
           }
         };
         axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
-        // res.json(response.data);
     });
   }
   catch (err) {
     console.log(err);
   }
 });
-app.get('/api/sendmetafield', function(req, res) {
-  res.json(metafieldBody);
-});
 
-app.get('*', (req, res) => {
-  res.status(500).json({ message: "error" })
-})
 
 app.listen(port);
 module.exports = app;
