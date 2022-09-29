@@ -68,7 +68,7 @@ app.get('/api/image/:prodId', function(req, res) {
 });
 
 // get TASK_KEY to complete json order in next step
-app.get("/api/template/:templateId", async (req, res) => {
+app.get("/api/template/:templateId", (req, res) => {
   if (req.params.templateId) {
     try {
       axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, {
@@ -155,24 +155,12 @@ app.post('/api/sendmetafield', function(req, res) {
       headers: {
         'X-Shopify-Access-Token': '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'
       }
-    })
-      .then((response) => {
-        // metafieldBody = response.data;
-
-        // newData = JSON.parse(response.data);
-        // if ( newData.hasOwnProperty('.metafields') & newData.metafields.length != 0 ) {
-        //   metafieldBody = `${req.body.metafield.value},${response.data.metafields[0].value}`;
-        // } else {
-        //   metafieldBody = `${req.body.metafield.value}`;
-        // }
-
-        // metafieldBody = `${req.body.metafield.value},`;
-
+    }).then((response) => {
+        const metaValue = `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:''}`; //? value
         const headers = {
           'X-Shopify-Access-Token': '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',
           'Content-Type': 'application/json'
         };
-        const metaValue = `${req.body.metafield.value},`;
         const body = {
           "metafield": {
             "namespace": "customer_id",
@@ -182,7 +170,7 @@ app.post('/api/sendmetafield', function(req, res) {
           }
         };
         axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
-        res.json(response.data);
+        // res.json(response.data);
     });
   }
   catch (err) {
