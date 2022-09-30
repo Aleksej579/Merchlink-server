@@ -93,12 +93,12 @@ app.get("/api/template/:templateId", (req, res) => {
   }
 });
 
-// ORDER
+// ORDER | WRDKEDNXV3JS | 2YSVSDCPC181
 let arrOrder = [];
 app.post('/api/orderprintful', async function(req, res) {
   arrOrder.push(req.body)
   try {
-    const key = req.body.line_items[0].properties.customize_detail_order || 'gt-407088560';
+    const key = req.body.line_items[0].properties[0].value;
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${key}`, {
         headers: {
           Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
