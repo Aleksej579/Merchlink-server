@@ -35,8 +35,6 @@ app.get("/api/nonces/:userId", async (req, res) => {
 // GT-IMAGE
 app.get('/api/gtkey/:gtkey', function (req, res) {
   try {
-    // const key_gt = req.params.gtkey;
-    // axios.get(`https://api.printful.com/mockup-generator/task?task_key=${key_gt}`, {
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gtkey}`, {
       headers: {
         Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
