@@ -8,11 +8,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.get("/", async (req, res) => {
-  res.send('Server');
-})
-app.get('*', (req, res) => {
-  res.status(500).json({ message: "error" })
-})
+  res.send('Server!');
+});
 
 // ?preview_theme_id=134752338164
 // https://merchlink.com/account?my_collections
@@ -33,7 +30,7 @@ app.get("/api/nonces/:userId", async (req, res) => {
   catch (err) {
       console.log(err)
   }
-})
+});
 
 // GT-IMAGE
 app.get('/api/gtkey/:gtkey', function (req, res) {
@@ -52,7 +49,7 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
   catch (err) {
       console.log(err);
   }
-})
+});
 
 // IMAGE
 app.get('/api/image/:prodId', function(req, res) {
@@ -176,6 +173,9 @@ app.post('/api/sendmetafield', function(req, res) {
   }
 });
 
+app.get('*', (req, res) => {
+  res.status(500).json({ message: "error" })
+});
 
 app.listen(port);
 module.exports = app;
