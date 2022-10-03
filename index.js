@@ -95,6 +95,7 @@ app.get("/api/template/:templateId", (req, res) => {
 
 // ORDER | WRDKEDNXV3JS | 2YSVSDCPC181
 let arrOrder = [];
+let arrItemProducts = [];
 app.post('/api/orderprintful', async function(req, res) {
   arrOrder.push(req.body)
   try {
@@ -110,6 +111,9 @@ app.post('/api/orderprintful', async function(req, res) {
           'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
           'X-PF-Store-ID': '5651474'
         };
+        for(let item of req.body.line_items) {
+          arrItemProducts.push(item.properties[0].value);
+        }
         const body = {
           "recipient": {
             "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
@@ -139,7 +143,8 @@ app.post('/api/orderprintful', async function(req, res) {
   }
 });
 app.get('/api/orderprintful', function(req, res) {
-    res.json(arrOrder);
+    // res.json(arrOrder);
+    res.json(arrItemProducts);
 });
 
 // METAFIELDS

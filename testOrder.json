@@ -1,419 +1,496 @@
 [
   {
-    "id": 4928805535988,
-    "admin_graphql_api_id": "gid://shopify/Order/4928805535988",
-    "app_id": 580111,
-    "browser_ip": "50.7.142.181",
-    "buyer_accepts_marketing": false,
-    "cancel_reason": null,
-    "cancelled_at": null,
-    "cart_token": "0401501b685a8eeb376d1a68f3d84f32",
-    "checkout_id": 33025997373684,
-    "checkout_token": "62b1d80ca375e33298b2cc8758269e75",
-    "client_details": {
-      "accept_language": "ru-UA,ru;q=0.9,en-CA;q=0.8,en;q=0.7,uk-UA;q=0.6,uk;q=0.5,ru-RU;q=0.4,en-US;q=0.3",
-      "browser_height": 668,
-      "browser_ip": "50.7.142.181",
-      "browser_width": 1277,
-      "session_hash": null,
-      "user_agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36"
-    },
-    "closed_at": null,
-    "confirmed": true,
-    "contact_email": "aleksej.eremenko579@gmail.com",
-    "created_at": "2022-09-30T09:47:24-04:00",
-    "currency": "USD",
-    "current_subtotal_price": "0.00",
-    "current_subtotal_price_set": {
-      "shop_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      }
-    },
-    "current_total_discounts": "40.99",
-    "current_total_discounts_set": {
-      "shop_money": {
-        "amount": "40.99",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "40.99",
-        "currency_code": "USD"
-      }
-    },
-    "current_total_duties_set": null,
-    "current_total_price": "0.00",
-    "current_total_price_set": {
-      "shop_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      }
-    },
-    "current_total_tax": "0.00",
-    "current_total_tax_set": {
-      "shop_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      }
-    },
-    "customer_locale": "en-US",
-    "device_id": null,
-    "discount_codes": [
-      {
-        "code": "WRDKEDNXV3JS",
-        "amount": "37.00",
-        "type": "percentage"
-      },
-      {
-        "code": "2YSVSDCPC181",
-        "amount": "3.99",
-        "type": "shipping"
-      }
-    ],
-    "email": "aleksej.eremenko579@gmail.com",
-    "estimated_taxes": false,
-    "financial_status": "paid",
-    "fulfillment_status": null,
-    "gateway": null,
-    "landing_site": "/products/academicu-youth-short-sleeve-t-shirt-1",
-    "landing_site_ref": null,
-    "location_id": null,
-    "name": "#2748",
-    "note": "",
-    "note_attributes": [],
-    "number": 1748,
-    "order_number": 2748,
-    "order_status_url": "https://merchlink.com/51910705313/orders/3fb6aea5672670ab2cac489f0fba6084/authenticate?key=d57293c5d10bfd26d1c9d2b045e8603a",
-    "original_total_duties_set": null,
-    "payment_gateway_names": [],
-    "phone": null,
-    "presentment_currency": "USD",
-    "processed_at": "2022-09-30T09:47:22-04:00",
-    "processing_method": "free",
-    "reference": null,
-    "referring_site": "",
-    "source_identifier": null,
-    "source_name": "web",
-    "source_url": null,
-    "subtotal_price": "0.00",
-    "subtotal_price_set": {
-      "shop_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      }
-    },
-    "tags": "",
-    "tax_lines": [],
-    "taxes_included": true,
-    "test": false,
-    "token": "3fb6aea5672670ab2cac489f0fba6084",
-    "total_discounts": "40.99",
-    "total_discounts_set": {
-      "shop_money": {
-        "amount": "40.99",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "40.99",
-        "currency_code": "USD"
-      }
-    },
-    "total_line_items_price": "37.00",
-    "total_line_items_price_set": {
-      "shop_money": {
-        "amount": "37.00",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "37.00",
-        "currency_code": "USD"
-      }
-    },
-    "total_outstanding": "0.00",
-    "total_price": "0.00",
-    "total_price_set": {
-      "shop_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      }
-    },
-    "total_price_usd": "0.00",
-    "total_shipping_price_set": {
-      "shop_money": {
-        "amount": "3.99",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "3.99",
-        "currency_code": "USD"
-      }
-    },
-    "total_tax": "0.00",
-    "total_tax_set": {
-      "shop_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      },
-      "presentment_money": {
-        "amount": "0.00",
-        "currency_code": "USD"
-      }
-    },
-    "total_tip_received": "0.00",
-    "total_weight": 104,
-    "updated_at": "2022-09-30T09:47:25-04:00",
-    "user_id": null,
-    "billing_address": {
-      "first_name": "Aleksej",
-      "address1": "Test",
-      "phone": "",
-      "city": "Test",
-      "zip": "35242",
-      "province": "Alabama",
-      "country": "United States",
-      "last_name": "Eremenko",
-      "address2": "",
-      "company": null,
-      "latitude": 33.4165524,
-      "longitude": -86.681253,
-      "name": "Aleksej Eremenko",
-      "country_code": "US",
-      "province_code": "AL"
-    },
-    "customer": {
-      "id": 6341351670004,
-      "email": "aleksej.eremenko579@gmail.com",
-      "accepts_marketing": true,
-      "created_at": "2022-08-26T10:01:54-04:00",
-      "updated_at": "2022-09-30T09:47:25-04:00",
-      "first_name": "Aleksej",
-      "last_name": "Eremenko",
-      "state": "enabled",
-      "note": "test account for developing\npass: 12345678\n",
-      "verified_email": true,
-      "multipass_identifier": null,
-      "tax_exempt": false,
-      "tags": "",
-      "currency": "USD",
-      "phone": null,
-      "accepts_marketing_updated_at": "2022-08-26T10:01:54-04:00",
-      "marketing_opt_in_level": "single_opt_in",
-      "email_marketing_consent": {
-        "state": "subscribed",
-        "opt_in_level": "single_opt_in",
-        "consent_updated_at": null
-      },
-      "sms_marketing_consent": null,
-      "admin_graphql_api_id": "gid://shopify/Customer/6341351670004",
-      "default_address": {
-        "id": 7934276141300,
-        "customer_id": 6341351670004,
-        "first_name": "Aleksej",
-        "last_name": "Eremenko",
-        "company": null,
-        "address1": "Test",
-        "address2": "",
-        "city": "Test",
-        "province": "Alabama",
-        "country": "United States",
-        "zip": "35242",
-        "phone": "",
-        "name": "Aleksej Eremenko",
-        "province_code": "AL",
-        "country_code": "US",
-        "country_name": "United States",
-        "default": true
-      }
-    },
-    "discount_applications": [
-      {
-        "target_type": "line_item",
-        "type": "discount_code",
-        "value": "100.0",
-        "value_type": "percentage",
-        "allocation_method": "across",
-        "target_selection": "all",
-        "code": "WRDKEDNXV3JS"
-      },
-      {
-        "target_type": "shipping_line",
-        "type": "discount_code",
-        "value": "100.0",
-        "value_type": "percentage",
-        "allocation_method": "each",
-        "target_selection": "all",
-        "code": "2YSVSDCPC181"
-      }
-    ],
-    "fulfillments": [],
-    "line_items": [
-      {
-        "id": 12499625902324,
-        "admin_graphql_api_id": "gid://shopify/LineItem/12499625902324",
-        "fulfillable_quantity": 1,
-        "fulfillment_service": "printful",
-        "fulfillment_status": null,
-        "gift_card": false,
-        "grams": 104,
-        "name": "AllUSports Demo All Over Print Women's T-shirt - XS",
-        "origin_location": {
-          "id": 3526119686388,
-          "country_code": "US",
-          "province_code": "NJ",
-          "name": "Merch Link",
-          "address1": "906 U.S. 22",
-          "address2": "",
-          "city": "Somerville",
-          "zip": "08876"
+     "id":4932468867316,
+     "admin_graphql_api_id":"gid://shopify/Order/4932468867316",
+     "app_id":580111,
+     "browser_ip":"109.86.251.13",
+     "buyer_accepts_marketing":true,
+     "cancel_reason":null,
+     "cancelled_at":null,
+     "cart_token":"fb9085d2c705e4bad9699f9f70e968a8",
+     "checkout_id":33034085073140,
+     "checkout_token":"44fb0d17a12de731667437a578b3c8dc",
+     "client_details":{
+        "accept_language":"ru-UA,ru;q=0.9,en-CA;q=0.8,en;q=0.7,uk-UA;q=0.6,uk;q=0.5,ru-RU;q=0.4,en-US;q=0.3",
+        "browser_height":697,
+        "browser_ip":"109.86.251.13",
+        "browser_width":1347,
+        "session_hash":null,
+        "user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+     },
+     "closed_at":null,
+     "confirmed":true,
+     "contact_email":"aleksej.eremenko579@gmail.com",
+     "created_at":"2022-10-03T14:54:42-04:00",
+     "currency":"USD",
+     "current_subtotal_price":"0.00",
+     "current_subtotal_price_set":{
+        "shop_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
         },
-        "price": "37.00",
-        "price_set": {
-          "shop_money": {
-            "amount": "37.00",
-            "currency_code": "USD"
-          },
-          "presentment_money": {
-            "amount": "37.00",
-            "currency_code": "USD"
-          }
+        "presentment_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        }
+     },
+     "current_total_discounts":"83.98",
+     "current_total_discounts_set":{
+        "shop_money":{
+           "amount":"83.98",
+           "currency_code":"USD"
         },
-        "product_exists": true,
-        "product_id": 7530009624820,
-        "properties": [
-          {
-            "name": "customize_detail_order",
-            "value": "gt-413854572"
-          }
-        ],
-        "quantity": 1,
-        "requires_shipping": true,
-        "sku": "4503794_8884",
-        "taxable": true,
-        "title": "AllUSports Demo All Over Print Women's T-shirt",
-        "total_discount": "0.00",
-        "total_discount_set": {
-          "shop_money": {
-            "amount": "0.00",
-            "currency_code": "USD"
-          },
-          "presentment_money": {
-            "amount": "0.00",
-            "currency_code": "USD"
-          }
+        "presentment_money":{
+           "amount":"83.98",
+           "currency_code":"USD"
+        }
+     },
+     "current_total_duties_set":null,
+     "current_total_price":"0.00",
+     "current_total_price_set":{
+        "shop_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
         },
-        "variant_id": 42329444548852,
-        "variant_inventory_management": null,
-        "variant_title": "XS",
-        "vendor": "All U Sportswear",
-        "tax_lines": [],
-        "duties": [],
-        "discount_allocations": [
-          {
-            "amount": "37.00",
-            "amount_set": {
-              "shop_money": {
-                "amount": "37.00",
-                "currency_code": "USD"
+        "presentment_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        }
+     },
+     "current_total_tax":"0.00",
+     "current_total_tax_set":{
+        "shop_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        },
+        "presentment_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        }
+     },
+     "customer_locale":"en-US",
+     "device_id":null,
+     "discount_codes":[
+        {
+           "code":"2YSVSDCPC181",
+           "amount":"11.98",
+           "type":"shipping"
+        },
+        {
+           "code":"WRDKEDNXV3JS",
+           "amount":"72.00",
+           "type":"percentage"
+        }
+     ],
+     "email":"aleksej.eremenko579@gmail.com",
+     "estimated_taxes":false,
+     "financial_status":"paid",
+     "fulfillment_status":null,
+     "gateway":null,
+     "landing_site":"/",
+     "landing_site_ref":null,
+     "location_id":null,
+     "merchant_of_record_app_id":null,
+     "name":"#2777",
+     "note":"",
+     "note_attributes":[
+        
+     ],
+     "number":1777,
+     "order_number":2777,
+     "order_status_url":"https://merchlink.com/51910705313/orders/4012a2fc968ee0ec4aac7f44c402f2d0/authenticate?key=5e4c45535f870c6501906ca2a4ca99fa",
+     "original_total_duties_set":null,
+     "payment_gateway_names":[
+        
+     ],
+     "phone":null,
+     "presentment_currency":"USD",
+     "processed_at":"2022-10-03T14:54:41-04:00",
+     "processing_method":"free",
+     "reference":null,
+     "referring_site":"",
+     "source_identifier":null,
+     "source_name":"web",
+     "source_url":null,
+     "subtotal_price":"0.00",
+     "subtotal_price_set":{
+        "shop_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        },
+        "presentment_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        }
+     },
+     "tags":"",
+     "tax_lines":[
+        
+     ],
+     "taxes_included":true,
+     "test":false,
+     "token":"4012a2fc968ee0ec4aac7f44c402f2d0",
+     "total_discounts":"83.98",
+     "total_discounts_set":{
+        "shop_money":{
+           "amount":"83.98",
+           "currency_code":"USD"
+        },
+        "presentment_money":{
+           "amount":"83.98",
+           "currency_code":"USD"
+        }
+     },
+     "total_line_items_price":"72.00",
+     "total_line_items_price_set":{
+        "shop_money":{
+           "amount":"72.00",
+           "currency_code":"USD"
+        },
+        "presentment_money":{
+           "amount":"72.00",
+           "currency_code":"USD"
+        }
+     },
+     "total_outstanding":"0.00",
+     "total_price":"0.00",
+     "total_price_set":{
+        "shop_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        },
+        "presentment_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        }
+     },
+     "total_shipping_price_set":{
+        "shop_money":{
+           "amount":"11.98",
+           "currency_code":"USD"
+        },
+        "presentment_money":{
+           "amount":"11.98",
+           "currency_code":"USD"
+        }
+     },
+     "total_tax":"0.00",
+     "total_tax_set":{
+        "shop_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        },
+        "presentment_money":{
+           "amount":"0.00",
+           "currency_code":"USD"
+        }
+     },
+     "total_tip_received":"0.00",
+     "total_weight":595,
+     "updated_at":"2022-10-03T14:54:43-04:00",
+     "user_id":null,
+     "billing_address":{
+        "first_name":"Aleksej",
+        "address1":"Test",
+        "phone":"",
+        "city":"Test",
+        "zip":"35242",
+        "province":"Alabama",
+        "country":"United States",
+        "last_name":"Eremenko",
+        "address2":"",
+        "company":null,
+        "latitude":33.4165524,
+        "longitude":-86.681253,
+        "name":"Aleksej Eremenko",
+        "country_code":"US",
+        "province_code":"AL"
+     },
+     "customer":{
+        "id":6341351670004,
+        "email":"aleksej.eremenko579@gmail.com",
+        "accepts_marketing":true,
+        "created_at":"2022-08-26T10:01:54-04:00",
+        "updated_at":"2022-10-03T14:54:43-04:00",
+        "first_name":"Aleksej",
+        "last_name":"Eremenko",
+        "state":"enabled",
+        "note":"test account for developing\npass: 12345678\n",
+        "verified_email":true,
+        "multipass_identifier":null,
+        "tax_exempt":false,
+        "tags":"",
+        "currency":"USD",
+        "phone":null,
+        "accepts_marketing_updated_at":"2022-08-26T10:01:54-04:00",
+        "marketing_opt_in_level":"single_opt_in",
+        "email_marketing_consent":{
+           "state":"subscribed",
+           "opt_in_level":"single_opt_in",
+           "consent_updated_at":null
+        },
+        "sms_marketing_consent":null,
+        "admin_graphql_api_id":"gid://shopify/Customer/6341351670004",
+        "default_address":{
+           "id":7934276141300,
+           "customer_id":6341351670004,
+           "first_name":"Aleksej",
+           "last_name":"Eremenko",
+           "company":null,
+           "address1":"Test",
+           "address2":"",
+           "city":"Test",
+           "province":"Alabama",
+           "country":"United States",
+           "zip":"35242",
+           "phone":"",
+           "name":"Aleksej Eremenko",
+           "province_code":"AL",
+           "country_code":"US",
+           "country_name":"United States",
+           "default":true
+        }
+     },
+     "discount_applications":[
+        {
+           "target_type":"shipping_line",
+           "type":"discount_code",
+           "value":"100.0",
+           "value_type":"percentage",
+           "allocation_method":"each",
+           "target_selection":"all",
+           "code":"2YSVSDCPC181"
+        },
+        {
+           "target_type":"line_item",
+           "type":"discount_code",
+           "value":"100.0",
+           "value_type":"percentage",
+           "allocation_method":"across",
+           "target_selection":"all",
+           "code":"WRDKEDNXV3JS"
+        }
+     ],
+     "fulfillments":[
+        
+     ],
+     "line_items":[
+        {
+           "id":12507147960564,
+           "admin_graphql_api_id":"gid://shopify/LineItem/12507147960564",
+           "fulfillable_quantity":1,
+           "fulfillment_service":"printful",
+           "fulfillment_status":null,
+           "gift_card":false,
+           "grams":496,
+           "name":"321HOOPS Unisex Hoodie - Black / S",
+           "price":"50.00",
+           "price_set":{
+              "shop_money":{
+                 "amount":"50.00",
+                 "currency_code":"USD"
               },
-              "presentment_money": {
-                "amount": "37.00",
-                "currency_code": "USD"
+              "presentment_money":{
+                 "amount":"50.00",
+                 "currency_code":"USD"
               }
-            },
-            "discount_application_index": 0
-          }
-        ]
-      }
-    ],
-    "payment_terms": null,
-    "refunds": [],
-    "shipping_address": {
-      "first_name": "Aleksej",
-      "address1": "Test",
-      "phone": "",
-      "city": "Test",
-      "zip": "35242",
-      "province": "Alabama",
-      "country": "United States",
-      "last_name": "Eremenko",
-      "address2": "",
-      "company": null,
-      "latitude": 33.4165524,
-      "longitude": -86.681253,
-      "name": "Aleksej Eremenko",
-      "country_code": "US",
-      "province_code": "AL"
-    },
-    "shipping_lines": [
-      {
-        "id": 4060605874420,
-        "carrier_identifier": "3dd87416a3b1e12a9ef3604aaaaf4d1e",
-        "code": "STANDARD",
-        "delivery_category": null,
-        "discounted_price": "3.99",
-        "discounted_price_set": {
-          "shop_money": {
-            "amount": "3.99",
-            "currency_code": "USD"
-          },
-          "presentment_money": {
-            "amount": "3.99",
-            "currency_code": "USD"
-          }
-        },
-        "phone": null,
-        "price": "3.99",
-        "price_set": {
-          "shop_money": {
-            "amount": "3.99",
-            "currency_code": "USD"
-          },
-          "presentment_money": {
-            "amount": "3.99",
-            "currency_code": "USD"
-          }
-        },
-        "requested_fulfillment_service_id": null,
-        "source": "Printful Shipping",
-        "title": "Flat Rate (Estimated delivery: Oct 7⁠–10)",
-        "tax_lines": [],
-        "discount_allocations": [
-          {
-            "amount": "3.99",
-            "amount_set": {
-              "shop_money": {
-                "amount": "3.99",
-                "currency_code": "USD"
+           },
+           "product_exists":true,
+           "product_id":7879952859380,
+           "properties":[
+              {
+                 "name":"customize_detail_order",
+                 "value":"gt-413784607"
+              }
+           ],
+           "quantity":1,
+           "requires_shipping":true,
+           "sku":"1105660_10779",
+           "taxable":true,
+           "title":"321HOOPS Unisex Hoodie",
+           "total_discount":"0.00",
+           "total_discount_set":{
+              "shop_money":{
+                 "amount":"0.00",
+                 "currency_code":"USD"
               },
-              "presentment_money": {
-                "amount": "3.99",
-                "currency_code": "USD"
+              "presentment_money":{
+                 "amount":"0.00",
+                 "currency_code":"USD"
               }
-            },
-            "discount_application_index": 1
-          }
-        ]
-      }
-    ]
+           },
+           "variant_id":43368949809396,
+           "variant_inventory_management":null,
+           "variant_title":"Black / S",
+           "vendor":"Merch Link",
+           "tax_lines":[
+              
+           ],
+           "duties":[
+              
+           ],
+           "discount_allocations":[
+              {
+                 "amount":"50.00",
+                 "amount_set":{
+                    "shop_money":{
+                       "amount":"50.00",
+                       "currency_code":"USD"
+                    },
+                    "presentment_money":{
+                       "amount":"50.00",
+                       "currency_code":"USD"
+                    }
+                 },
+                 "discount_application_index":1
+              }
+           ]
+        },
+        {
+           "id":12507147993332,
+           "admin_graphql_api_id":"gid://shopify/LineItem/12507147993332",
+           "fulfillable_quantity":1,
+           "fulfillment_service":"printful",
+           "fulfillment_status":null,
+           "gift_card":false,
+           "grams":99,
+           "name":"5 Panel Trucker Cap | Yupoong 6006 - Black/ White",
+           "price":"22.00",
+           "price_set":{
+              "shop_money":{
+                 "amount":"22.00",
+                 "currency_code":"USD"
+              },
+              "presentment_money":{
+                 "amount":"22.00",
+                 "currency_code":"USD"
+              }
+           },
+           "product_exists":true,
+           "product_id":6627024666785,
+           "properties":[
+              {
+                 "name":"customize_detail_order",
+                 "value":"gt-413783049"
+              }
+           ],
+           "quantity":1,
+           "requires_shipping":true,
+           "sku":"2134455_4812",
+           "taxable":true,
+           "title":"5 Panel Trucker Cap | Yupoong 6006",
+           "total_discount":"0.00",
+           "total_discount_set":{
+              "shop_money":{
+                 "amount":"0.00",
+                 "currency_code":"USD"
+              },
+              "presentment_money":{
+                 "amount":"0.00",
+                 "currency_code":"USD"
+              }
+           },
+           "variant_id":39503552250017,
+           "variant_inventory_management":null,
+           "variant_title":"Black/ White",
+           "vendor":"All U Sportswear",
+           "tax_lines":[
+              
+           ],
+           "duties":[
+              
+           ],
+           "discount_allocations":[
+              {
+                 "amount":"22.00",
+                 "amount_set":{
+                    "shop_money":{
+                       "amount":"22.00",
+                       "currency_code":"USD"
+                    },
+                    "presentment_money":{
+                       "amount":"22.00",
+                       "currency_code":"USD"
+                    }
+                 },
+                 "discount_application_index":1
+              }
+           ]
+        }
+     ],
+     "payment_terms":null,
+     "refunds":[
+        
+     ],
+     "shipping_address":{
+        "first_name":"Aleksej",
+        "address1":"Test",
+        "phone":"",
+        "city":"Test",
+        "zip":"35242",
+        "province":"Alabama",
+        "country":"United States",
+        "last_name":"Eremenko",
+        "address2":"",
+        "company":null,
+        "latitude":33.4165524,
+        "longitude":-86.681253,
+        "name":"Aleksej Eremenko",
+        "country_code":"US",
+        "province_code":"AL"
+     },
+     "shipping_lines":[
+        {
+           "id":4063153488116,
+           "carrier_identifier":"3dd87416a3b1e12a9ef3604aaaaf4d1e",
+           "code":"STANDARD",
+           "delivery_category":null,
+           "discounted_price":"11.98",
+           "discounted_price_set":{
+              "shop_money":{
+                 "amount":"11.98",
+                 "currency_code":"USD"
+              },
+              "presentment_money":{
+                 "amount":"11.98",
+                 "currency_code":"USD"
+              }
+           },
+           "phone":null,
+           "price":"11.98",
+           "price_set":{
+              "shop_money":{
+                 "amount":"11.98",
+                 "currency_code":"USD"
+              },
+              "presentment_money":{
+                 "amount":"11.98",
+                 "currency_code":"USD"
+              }
+           },
+           "requested_fulfillment_service_id":null,
+           "source":"Printful Shipping",
+           "title":"Flat Rate (Estimated delivery: Oct 10⁠–11)",
+           "tax_lines":[
+              
+           ],
+           "discount_allocations":[
+              {
+                 "amount":"11.98",
+                 "amount_set":{
+                    "shop_money":{
+                       "amount":"11.98",
+                       "currency_code":"USD"
+                    },
+                    "presentment_money":{
+                       "amount":"11.98",
+                       "currency_code":"USD"
+                    }
+                 },
+                 "discount_application_index":0
+              }
+           ]
+        }
+     ]
   }
 ]
