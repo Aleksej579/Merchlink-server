@@ -94,57 +94,54 @@ app.get("/api/template/:templateId", (req, res) => {
 });
 
 // ORDER | WRDKEDNXV3JS | 2YSVSDCPC181
-let arrOrder = [];
-let arrItemProducts = [];
+let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
-  arrOrder.push(req.body)
-  try {
-    const key = req.body.line_items[0].properties[0].value;
-    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${key}`, {
+  for(let [index, item] of req.body.line_items.entries()) {
+    const keyGt = item.properties[0].value;
+    try {
+      axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
         headers: {
           Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
           'X-PF-Store-ID': 5651474
         }
       }).then(response => {
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
-          'X-PF-Store-ID': '5651474'
-        };
-        for(let item of req.body.line_items) {
-          arrItemProducts.push(item.properties[0].value);
-        }
-        const body = {
-          "recipient": {
-            "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
-            "address1": `${req.body.customer.default_address.address1}`,
-            "city": `${req.body.customer.default_address.city}`,
-            "state_code": `${req.body.customer.default_address.province_code}`,
-            "country_code": `${req.body.customer.default_address.country_code}`,
-            "zip": `${req.body.customer.default_address.zip}`
-          },
-          "items": [{
-            "quantity": `${req.body.line_items[0].quantity}`,
-            "variant_id": `${response.data.result.printfiles[0].variant_ids}`,
-            "files": [{
-              "placement": `${response.data.result.printfiles[0].placement}`,
-              "url": `${response.data.result.printfiles[0].url}`
-            }]
+        arrBody.push({
+          "quantity": `${req.body.line_items[index].quantity}`,
+          "variant_id": `${response.data.result.printfiles[0].variant_ids}`,
+          "files": [{
+            "placement": `${response.data.result.printfiles[0].placement}`,
+            "url": `${response.data.result.printfiles[0].url}`
           }]
-        };
-        axios.post("https://api.printful.com/orders", body, { headers })
-          .then((response) => {
-            res.json(response.data);
-          });
+        });
       })
+    }
+    catch (err) {
+      console.log(err);
+    }
   }
-  catch (err) {
-    console.log(err);
-  }
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
+    'X-PF-Store-ID': '5651474'
+  };
+  const body = {
+    "recipient": {
+      "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
+      "address1": `${req.body.customer.default_address.address1}`,
+      "city": `${req.body.customer.default_address.city}`,
+      "state_code": `${req.body.customer.default_address.province_code}`,
+      "country_code": `${req.body.customer.default_address.country_code}`,
+      "zip": `${req.body.customer.default_address.zip}`
+    },
+    "items": arrBody
+  };
+  axios.post("https://api.printful.com/orders", body, { headers })
+    .then((response) => {
+      res.json(response.data);
+    });
 });
 app.get('/api/orderprintful', function(req, res) {
-    // res.json(arrOrder);
-    res.json(arrItemProducts);
+    res.json(arrBody);
 });
 
 // METAFIELDS
