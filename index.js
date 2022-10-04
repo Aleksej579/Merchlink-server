@@ -173,6 +173,44 @@ app.post('/api/sendmetafield', function(req, res) {
   }
 });
 
+// 7079208255649:gt-415460465,6551978049697:gt-415086002,7079243284641:gt-415080485,7529999663348:gt-413879759,7530009624820:gt-413854572,7858672238836:gt-413787274,7879952859380:gt-413786068,7879952859380:gt-413784607,6627024666785:gt-413783049,7530009624820:gt-413551747,7530009624820:gt-413535040,7685257396468:gt-413533226,7779733602548:gt-413491003,7779733602548:gt-413487307,6627024666785:gt-413482171,7858672238836:gt-410404801,
+// METAFIELDS remove products
+app.post('/api/changemetafield', function(req, res) {
+  try {
+    const customerId = req.body.customer_id;
+    const product_template = req.body.product_template;
+    axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
+      headers: {
+        'X-Shopify-Access-Token': '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'
+      }
+    }).then((response) => {
+      const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
+      const newData = existData.replace(/product_template/g, '');
+      const headers = {
+        'X-Shopify-Access-Token': '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',
+        'Content-Type': 'application/json'
+      };
+      const body = {
+        "metafield": {
+          "namespace": "customer_id",
+          "key": "collection_name",
+          "value": `${newData}`,
+          "type": "single_line_text_field"
+        }
+      };
+      axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+    })
+  }
+  catch (err) {
+    console.log(err);
+  }
+});
+app.get('/api/changemetafield', function(req, res) {
+  res.json();
+});
+
+
+
 app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
 });
