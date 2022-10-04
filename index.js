@@ -99,7 +99,7 @@ app.post('/api/orderprintful', async function(req, res) {
   for(let [index, item] of req.body.line_items.entries()) {
     const keyGt = item.properties[0].value;
     try {
-      axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
+      await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
         headers: {
           Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
           'X-PF-Store-ID': 5651474
