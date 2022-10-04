@@ -186,7 +186,7 @@ app.post('/api/changemetafield', function(req, res) {
       }
     }).then((response) => {
       const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
-      const newData = existData.replace(/product_template/g, '');
+      const newData = existData.replace(product_template, '');
       const headers = {
         'X-Shopify-Access-Token': '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',
         'Content-Type': 'application/json'
