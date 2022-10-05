@@ -123,7 +123,7 @@ app.post('/api/orderprintful', async function(req, res) {
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-    'X-PF-Store-ID': `${process.env.STORE_ID}`
+    'X-PF-Store-ID': process.env.STORE_ID
   };
   const body = {
     "recipient": {
@@ -151,11 +151,11 @@ app.post('/api/sendmetafield', function(req, res) {
     const customerId = req.body.metafield.namespace;
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
       headers: {
-        'X-Shopify-Access-Token': `${process.env.ACCESS_TOKEN_SHOPIFY}`
+        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
       }
     }).then((response) => {
         const headers = {
-          'X-Shopify-Access-Token': `${process.env.ACCESS_TOKEN_SHOPIFY}`,
+          'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
           'Content-Type': 'application/json'
         };
         const body = {
@@ -181,13 +181,13 @@ app.post('/api/changemetafield', function(req, res) {
     const product_template = req.body.product_template;
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
       headers: {
-        'X-Shopify-Access-Token': `${process.env.ACCESS_TOKEN_SHOPIFY}`
+        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
       }
     }).then((response) => {
       const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
       const newData = existData.replace(`${product_template},`, '');
       const headers = {
-        'X-Shopify-Access-Token': `${process.env.ACCESS_TOKEN_SHOPIFY}`,
+        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
         'Content-Type': 'application/json'
       };
       const body = {
