@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express')
 const app = express()
 const port = 3000
@@ -12,13 +13,13 @@ app.get("/", async (req, res) => {
 });
 
 // ?preview_theme_id=134752338164
-// https://merchlink.com/account?my_collections
+// ?my_collections
 // https://test-server-v2.vercel.app
 
 // NONCES
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
-    const token = 'xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS';
+    const token = process.env.TOKEN_PRINTFUL;
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -37,8 +38,8 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
   try {
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gtkey}`, {
       headers: {
-        Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
-        'X-PF-Store-ID': 5651474
+        Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
+        'X-PF-Store-ID': process.env.STORE_ID
       }
     }).then(resp => {
       res.json(resp.data);
@@ -53,7 +54,7 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
 app.get('/api/image/:prodId', function(req, res) {
   try {
     axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {
-      headers: {Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS'}
+      headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}
     }).then(resp => {
       res.json(resp.data);
     });
@@ -63,12 +64,12 @@ app.get('/api/image/:prodId', function(req, res) {
   }
 });
 
-// get TASK_KEY to complete json order in next step
+// TASK_KEY
 app.get("/api/template/:templateId", (req, res) => {
   if (req.params.templateId) {
     try {
       axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, {
-        headers: {Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS'}
+        headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}
       }).then(resTemplates => {
         return axios.post(`https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
         {
@@ -78,8 +79,8 @@ app.get("/api/template/:templateId", (req, res) => {
         },
         {
           headers: {
-            'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
-            'X-PF-Store-ID': 5651474
+            'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+            'X-PF-Store-ID': process.env.STORE_ID
           }
         }
       )
@@ -93,7 +94,7 @@ app.get("/api/template/:templateId", (req, res) => {
   }
 });
 
-// ORDER | WRDKEDNXV3JS | 2YSVSDCPC181
+// ORDER
 let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
   for(let [index, item] of req.body.line_items.entries()) {
@@ -101,8 +102,8 @@ app.post('/api/orderprintful', async function(req, res) {
     try {
       await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
         headers: {
-          Authorization: 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
-          'X-PF-Store-ID': 5651474
+          Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
+          'X-PF-Store-ID': process.env.STORE_ID
         }
       }).then(response => {
         arrBody.push({
@@ -121,8 +122,8 @@ app.post('/api/orderprintful', async function(req, res) {
   }
   const headers = {
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer xaAg8OBVXFK2f6iynNmkktVorMxyK8MyCJys2xOS',
-    'X-PF-Store-ID': '5651474'
+    'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+    'X-PF-Store-ID': `${process.env.STORE_ID}`
   };
   const body = {
     "recipient": {
@@ -150,11 +151,11 @@ app.post('/api/sendmetafield', function(req, res) {
     const customerId = req.body.metafield.namespace;
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
       headers: {
-        'X-Shopify-Access-Token': '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'
+        'X-Shopify-Access-Token': `${process.env.ACCESS_TOKEN_SHOPIFY}`
       }
     }).then((response) => {
         const headers = {
-          'X-Shopify-Access-Token': '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',
+          'X-Shopify-Access-Token': `${process.env.ACCESS_TOKEN_SHOPIFY}`,
           'Content-Type': 'application/json'
         };
         const body = {
@@ -180,13 +181,13 @@ app.post('/api/changemetafield', function(req, res) {
     const product_template = req.body.product_template;
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
       headers: {
-        'X-Shopify-Access-Token': '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'
+        'X-Shopify-Access-Token': `${process.env.ACCESS_TOKEN_SHOPIFY}`
       }
     }).then((response) => {
       const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
       const newData = existData.replace(`${product_template},`, '');
       const headers = {
-        'X-Shopify-Access-Token': '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',
+        'X-Shopify-Access-Token': `${process.env.ACCESS_TOKEN_SHOPIFY}`,
         'Content-Type': 'application/json'
       };
       const body = {
@@ -207,7 +208,6 @@ app.post('/api/changemetafield', function(req, res) {
 app.get('/api/changemetafield', function(req, res) {
   res.json();
 });
-
 
 
 app.get('*', (req, res) => {
