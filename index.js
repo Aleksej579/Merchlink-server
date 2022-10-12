@@ -209,6 +209,29 @@ app.get('/api/changemetafield', function(req, res) {
   res.json();
 });
 
+// METAFIELDS public page
+app.post('/api/publiccollection', function(req, res) {
+  // arr = req.body
+  try {
+    const headers = {
+      'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
+      'Content-Type': 'application/json'
+    };
+    const body = {
+      "metafield": {
+        "namespace": `${req.body.userid}`,
+        "key": `collection_${req.body.userid}`,
+        "value": `${req.body.metaf}`,
+        "type": "single_line_text_field"
+      }
+    };
+    axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers });
+  }
+  catch (err) {
+    console.log(err);
+  }
+});
+
 
 app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
