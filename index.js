@@ -220,7 +220,7 @@ app.post('/api/publiccollection', function(req, res) {
     const body = {
       "metafield": {
         "namespace": `${req.body.userid}`,
-        "key": `collection_${req.body.userid}`,
+        "key": `${req.body.userid}`,
         "value": `${req.body.metaf}`,
         "type": "single_line_text_field"
       }
