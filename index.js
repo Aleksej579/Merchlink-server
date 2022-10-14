@@ -162,7 +162,7 @@ app.post('/api/sendmetafield', function(req, res) {
           "metafield": {
             "namespace": "customer_id",
             "key": "collection_name",
-            "value": `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:''}`,
+            "value": `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:'|My collection'}`,
             "type": "single_line_text_field"
           }
         };
@@ -211,7 +211,6 @@ app.get('/api/changemetafield', function(req, res) {
 
 // METAFIELDS public page
 app.post('/api/publiccollection', function(req, res) {
-  // arr = req.body
   try {
     const headers = {
       'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
