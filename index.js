@@ -166,7 +166,10 @@ app.post('/api/sendmetafield', function(req, res) {
             "type": "single_line_text_field"
           }
         };
-        axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+        axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
+          .then((response) => {
+            res.json(response.data);
+          });
     });
   }
   catch (err) {
@@ -234,7 +237,10 @@ app.post('/api/namecoll', function(req, res) {
           "type": "single_line_text_field"
         }
       };
-      axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+      axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
+        .then((response) => {
+          res.json(response.data);
+        });
     })
   }
   catch (err) {
