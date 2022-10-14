@@ -162,7 +162,7 @@ app.post('/api/sendmetafield', function(req, res) {
           "metafield": {
             "namespace": "customer_id",
             "key": "collection_name",
-            "value": `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:'|My collection'}`,
+            "value": `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:'#My collection'}`,
             "type": "single_line_text_field"
           }
         };
@@ -207,6 +207,39 @@ app.post('/api/changemetafield', function(req, res) {
 });
 app.get('/api/changemetafield', function(req, res) {
   res.json();
+});
+
+// METAFIELD name-collection
+app.post('/api/namecoll', function(req, res) {
+  try {
+    const customerId = req.body.userid;
+    const nameColl = req.body.newName;
+    axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
+      headers: {
+        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
+      }
+    }).then((response) => {
+      const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
+      const reg = /#(.*)/;
+      const newData = existData.replace(reg, `#${nameColl}`);
+      const headers = {
+        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
+        'Content-Type': 'application/json'
+      };
+      const body = {
+        "metafield": {
+          "namespace": "customer_id",
+          "key": "collection_name",
+          "value": `${newData}`,
+          "type": "single_line_text_field"
+        }
+      };
+      axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+    })
+  }
+  catch (err) {
+    console.log(err);
+  }
 });
 
 // METAFIELDS public page
