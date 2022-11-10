@@ -5,8 +5,15 @@ const port = 3000
 const axios = require('axios');
 const cors = require('cors');
 var bodyParser = require('body-parser');
+const fileupload = require('express-fileupload')
 app.use(cors());
 app.use(bodyParser.json());
+app.use(fileupload({
+  limits: {
+      fileSize: 10000000,
+  },
+  abortOnLimit: true,
+}));
 
 app.get("/", async (req, res) => {
   res.send('Server!');
@@ -142,7 +149,7 @@ app.post('/api/orderprintful', async function(req, res) {
     });
 });
 app.get('/api/orderprintful', function(req, res) {
-    res.json(arrBody);
+  res.json(arrBody);
 });
 
 // METAFIELDS
@@ -268,6 +275,34 @@ app.post('/api/publiccollection', function(req, res) {
   catch (err) {
     console.log(err);
   }
+});
+
+let arrImageColl = []
+app.post('/api/logocollection/:userId', function(req, res) {
+  try {
+    // arrImageColl.push(req.files);
+    arrImageColl.push(req.body);
+
+    const headers = {
+      'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
+      'Content-Type': 'application/json'
+    };
+    const body = {
+      "metafield": {
+        "namespace": "custom",
+        "key": "collection_image_base",
+        "value": req.body.baseImage,
+        "type": "single_line_text_field"
+      }
+    };
+    axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${req.params.userId}/metafields.json`, body, { headers })
+  }
+  catch (err) {
+    console.log(err);
+  }
+});
+app.get('/api/logocollection', function(req, res) {
+  res.json(arrImageColl);
 });
 
 
