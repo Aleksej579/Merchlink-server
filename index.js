@@ -215,9 +215,6 @@ app.post('/api/changemetafield', function(req, res) {
     console.log(err);
   }
 });
-app.get('/api/changemetafield', function(req, res) {
-  res.json();
-});
 
 // METAFIELD name-collection
 app.post('/api/namecoll', function(req, res) {
@@ -255,7 +252,7 @@ app.post('/api/namecoll', function(req, res) {
   }
 });
 
-// METAFIELDS public page
+// METAFIELD public page
 app.post('/api/publiccollection', function(req, res) {
   try {
     const headers = {
@@ -277,6 +274,7 @@ app.post('/api/publiccollection', function(req, res) {
   }
 });
 
+// METAFIELD image collection
 app.post('/api/logocollection/:userId', function(req, res) {
   try {
     arrImageColl.push(req.body);
@@ -298,6 +296,9 @@ app.post('/api/logocollection/:userId', function(req, res) {
   catch (err) {
     console.log(err);
   }
+});
+app.get('/api/logocollection/:userId', function(req, res) {
+  res.json();
 });
 
 app.get('*', (req, res) => {
