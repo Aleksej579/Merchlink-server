@@ -277,10 +277,8 @@ app.post('/api/publiccollection', function(req, res) {
   }
 });
 
-let arrImageColl = []
 app.post('/api/logocollection/:userId', function(req, res) {
   try {
-    // arrImageColl.push(req.files);
     arrImageColl.push(req.body);
 
     const headers = {
@@ -301,10 +299,6 @@ app.post('/api/logocollection/:userId', function(req, res) {
     console.log(err);
   }
 });
-app.get('/api/logocollection', function(req, res) {
-  res.json(arrImageColl);
-});
-
 
 app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
