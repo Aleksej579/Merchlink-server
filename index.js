@@ -297,8 +297,8 @@ app.post('/api/logocollection/:userId', function(req, res) {
     console.log(err);
   }
 });
-app.get('/api/logocollection/:userId', function(req, res) {
-  res.json();
+app.get('/api/logocollection', function(req, res) {
+  res.json(arrImageColl);
 });
 
 app.get('*', (req, res) => {
