@@ -19,10 +19,6 @@ app.get("/", async (req, res) => {
   res.send('Server!');
 });
 
-// ?preview_theme_id=134752338164
-// ?my_collections
-// https://test-server-v2.vercel.app
-
 // NONCES
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
@@ -296,6 +292,9 @@ app.post('/api/logocollection/:userId', function(req, res) {
       }
     };
     axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${req.params.userId}/metafields.json`, body, { headers })
+      .then((response) => {
+        res.json(response.data);
+      });
   }
   catch (err) {
     console.log(err);
