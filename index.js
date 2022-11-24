@@ -190,8 +190,10 @@ app.post('/api/changemetafield', function(req, res) {
         'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
       }
     }).then((response) => {
+
       const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
       const newData = existData.replace(`${product_template},`, '');
+
       const headers = {
         'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
         'Content-Type': 'application/json'
@@ -204,10 +206,22 @@ app.post('/api/changemetafield', function(req, res) {
           "type": "single_line_text_field"
         }
       };
-      axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
-        .then((response) => {
-          res.json(response.data);
-        });
+      axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+
+      const headers_ = {
+        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
+        'Content-Type': 'application/json'
+      };
+      const body_ = {
+        "metafield": {
+          "namespace": `${customerId}`,
+          "key": `${customerId}`,
+          "value": `${newData}`,
+          "type": "single_line_text_field"
+        }
+      };
+      axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body_, { headers_ });
+
     })
   }
   catch (err) {
