@@ -194,20 +194,6 @@ app.post('/api/changemetafield', function(req, res) {
       const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
       const newData = existData.replace(`${product_template},`, '');
 
-      const headers_ = {
-        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
-        'Content-Type': 'application/json'
-      };
-      const body_ = {
-        "metafield": {
-          "namespace": `${customerId}`,
-          "key": `${customerId}`,
-          "value": `${newData}`,
-          "type": "single_line_text_field"
-        }
-      };
-      axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body_, { headers_ });
-
       const headers = {
         'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
         'Content-Type': 'application/json'
