@@ -268,7 +268,22 @@ app.post('/api/publiccollection', function(req, res) {
         "type": "single_line_text_field"
       }
     };
-    axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers });
+    axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
+      .then(() => {
+        const headers = {
+          'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
+          'Content-Type': 'application/json'
+        };
+        const body = {
+          "metafield": {
+            "namespace": `${req.body.userid}-image_coll`,
+            "key": `${req.body.userid}-image_coll`,
+            "value": `${req.body.imageLogoCatalogSrc}`,
+            "type": "single_line_text_field"
+          }
+        };
+        axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
+      });
   }
   catch (err) {
     console.log(err);
