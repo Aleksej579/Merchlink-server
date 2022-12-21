@@ -70,6 +70,8 @@ app.get('/api/image/:prodId', function(req, res) {
   }
 });
 
+app.use('/static', express.static(__dirname + '/customers'));
+
 // TASK_KEY
 app.get("/api/template/:templateId", (req, res) => {
   if (req.params.templateId) {
@@ -332,16 +334,16 @@ app.get('/api/logocollection', function(req, res) {
   res.json(arrImageColl);
 });
 
-app.use('/static', express.static(__dirname + '/customers'));
-// app.get('/test', function(req, res) {
-//   let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/7be108c41a19ca988b84bd3487cbc3d5/printfile_front.png';
-//   let nameImage = 'img-1.png';
 
-//   fetch(linkToImage).then(res => {
-//     res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
-//   });
-//   res.send('Image is dowloaded!');
-// });
+app.get('/test', function(req, res) {
+  let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/7be108c41a19ca988b84bd3487cbc3d5/printfile_front.png';
+  let nameImage = 'img-1.png';
+
+  fetch(linkToImage).then(res => {
+    res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
+  });
+  res.send('Image is dowloaded!');
+});
 
 
 
