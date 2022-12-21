@@ -336,8 +336,9 @@ app.get('/api/logocollection', function(req, res) {
 
 
 app.get('/test', function(req, res) {
-  let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/7be108c41a19ca988b84bd3487cbc3d5/printfile_front.png';
-  let nameImage = 'img-1.png';
+  // let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/7be108c41a19ca988b84bd3487cbc3d5/printfile_front.png';
+  let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/c8a869080219708d41cee729cd67ac2d/kids-eco-hoodie-black-front-63a1e481cccee.jpg';
+  let nameImage = 'img-2.jpg';
 
   fetch(linkToImage).then(res => {
     res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
