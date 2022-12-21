@@ -5,7 +5,9 @@ const port = 3000
 const axios = require('axios');
 const cors = require('cors');
 var bodyParser = require('body-parser');
-const fileupload = require('express-fileupload')
+const fileupload = require('express-fileupload');
+const fetch = require('node-fetch');
+const fs = require('fs');
 app.use(cors());
 app.use(bodyParser.json());
 app.use(fileupload({
@@ -14,6 +16,7 @@ app.use(fileupload({
   },
   abortOnLimit: true,
 }));
+
 
 app.get("/", async (req, res) => {
   res.send('Server!');
@@ -89,6 +92,14 @@ app.get("/api/template/:templateId", (req, res) => {
       )
       }).then(resMockup => {
         res.json(resMockup.data.result.task_key);
+
+        let linkToImage = resMockup.data.result.mockup_url;
+        let nameImage = 'img-1.png';
+      
+        fetch(linkToImage).then(res => {
+          res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
+        });
+
       })
     }
     catch (err) {
@@ -320,6 +331,19 @@ app.post('/api/logocollection/:userId', function(req, res) {
 app.get('/api/logocollection', function(req, res) {
   res.json(arrImageColl);
 });
+
+app.use('/static', express.static(__dirname + '/customers'));
+// app.get('/test', function(req, res) {
+//   let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/7be108c41a19ca988b84bd3487cbc3d5/printfile_front.png';
+//   let nameImage = 'img-1.png';
+
+//   fetch(linkToImage).then(res => {
+//     res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
+//   });
+//   res.send('Image is dowloaded!');
+// });
+
+
 
 
 app.get('*', (req, res) => {

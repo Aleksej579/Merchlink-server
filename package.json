@@ -14,7 +14,9 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
-    "express-fileupload": "^1.4.0"
+    "express-fileupload": "^1.4.0",
+    "node-fetch": "^2.6.7",
+    "node-static": "^0.7.11"
   },
   "devDependencies": {
     "install": "^0.13.0",
