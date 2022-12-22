@@ -49,6 +49,15 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
       }
     }).then(resp => {
       res.json(resp.data);
+
+      // console.log(resp.data.result.mockups[0].mockup_url)
+
+      let linkToImage = resp.data.result.mockups[0].mockup_url;
+      let nameImage = 'img-1.png';
+      fetch(linkToImage).then(res => {
+        res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
+      });
+
     });
   }
   catch (err) {
@@ -95,12 +104,12 @@ app.get("/api/template/:templateId", (req, res) => {
       }).then(resMockup => {
         res.json(resMockup.data.result.task_key);
 
-        let linkToImage = resMockup.data.result.mockup_url;
-        let nameImage = 'img-1.png';
+        // let linkToImage = resMockup.data.result.mockup_url;
+        // let nameImage = 'img-1.png';
       
-        fetch(linkToImage).then(res => {
-          res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
-        });
+        // fetch(linkToImage).then(res => {
+        //   res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
+        // });
 
       })
     }
@@ -335,16 +344,15 @@ app.get('/api/logocollection', function(req, res) {
 });
 
 
-app.get('/test', function(req, res) {
-  // let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/7be108c41a19ca988b84bd3487cbc3d5/printfile_front.png';
-  let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/c8a869080219708d41cee729cd67ac2d/kids-eco-hoodie-black-front-63a1e481cccee.jpg';
-  let nameImage = 'img-2.jpg';
+// app.get('/test', function(req, res) {
+//   let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/c8a869080219708d41cee729cd67ac2d/kids-eco-hoodie-black-front-63a1e481cccee.jpg';
+//   let nameImage = 'img-2.jpg';
 
-  fetch(linkToImage).then(res => {
-    res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
-  });
-  res.send('Image is dowloaded!');
-});
+//   fetch(linkToImage).then(res => {
+//     res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
+//   });
+//   res.send('Image is dowloaded!');
+// });
 
 
 
