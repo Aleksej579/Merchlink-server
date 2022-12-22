@@ -50,12 +50,11 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
     }).then(resp => {
       res.json(resp.data);
 
-      // console.log(resp.data.result.mockups[0].mockup_url)
-
-      let linkToImage = resp.data.result.mockups[0].mockup_url;
-      let nameImage = 'img-1.png';
-      fetch(linkToImage).then(res => {
-        res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
+      let arrLinkToImage = resp.data.result.mockups;
+      arrLinkToImage.forEach((element, index) => {
+        fetch(element.mockup_url).then(res => {
+          res.body.pipe(fs.createWriteStream(`./customers/img-${index}.png`));
+        });
       });
 
     });
