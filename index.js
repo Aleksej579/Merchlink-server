@@ -19,7 +19,7 @@ app.use(fileupload({
 
 
 app.get("/", async (req, res) => {
-  res.send('Server!');
+  res.send('Server!.');
 });
 
 // NONCES
@@ -43,7 +43,7 @@ app.get("/api/nonces/:userId", async (req, res) => {
 
 // /api/saveimagefromurl/gt-450282912/6341351670004
 // /api/saveimagefromurl/gt-450281385/6341351670004
-// /api/saveimagefromurl/gt-450281385/6341351670004
+// https://test-server-nzly.onrender.com/api/saveimagefromurl/gt-451491011/6341351670004
 
 app.get("/api/saveimagefromurl/:gtkey/:customer", (req, res) => {
   try {
@@ -76,9 +76,6 @@ app.get("/api/saveimagefromurl/:gtkey/:customer", (req, res) => {
   }
 });
 
-
-
-
 // GT-IMAGE + save image
 app.get('/api/gtkey/:gtkey', function (req, res) {
   try {
@@ -89,15 +86,6 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
       }
     }).then(resp => {
       res.json(resp.data);
-
-      // save image
-      // let arrLinkToImage = resp.data.result.mockups;
-      // arrLinkToImage.forEach((element, index) => {
-      //   fetch(element.mockup_url).then(res => {
-      //     res.body.pipe(fs.createWriteStream(`./customers/img-${index}.png`));
-      //   });
-      // });
-
     });
   }
   catch (err) {
@@ -144,32 +132,8 @@ app.get("/api/template/:templateId", (req, res) => {
         }
       )
       }).then( (resMockup) => {
-        // gtkey = resMockup.data.result.task_key;
-
-        // await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${gtkey}`, {
-        //   headers: {
-        //     Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
-        //     'X-PF-Store-ID': process.env.STORE_ID
-        //   }
-        }).then(resp => {
-
-          // console.log(resp)
-
-          // let arrLinkToImage = resp.data.result.mockups;
-          // arrLinkToImage.forEach((element, index) => {
-          //   fetch(element.mockup_url).then(res => {
-          //     res.body.pipe(fs.createWriteStream(`./customers/img-${index}.png`));
-          //   });
-          // });
-        // });
-
-
         res.json(resMockup.data.result.task_key);
       })
-
-      
-
-
     }
     catch (err) {
         console.log(err)
@@ -400,19 +364,6 @@ app.post('/api/logocollection/:userId', function(req, res) {
 app.get('/api/logocollection', function(req, res) {
   res.json(arrImageColl);
 });
-
-
-// app.get('/test', function(req, res) {
-//   let linkToImage = 'https://printful-upload.s3-accelerate.amazonaws.com/tmp/c8a869080219708d41cee729cd67ac2d/kids-eco-hoodie-black-front-63a1e481cccee.jpg';
-//   let nameImage = 'img-2.jpg';
-
-//   fetch(linkToImage).then(res => {
-//     res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
-//   });
-//   res.send('Image is dowloaded!');
-// });
-
-
 
 
 app.get('*', (req, res) => {
