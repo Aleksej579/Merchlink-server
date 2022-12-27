@@ -39,7 +39,45 @@ app.get("/api/nonces/:userId", async (req, res) => {
   }
 });
 
-// GT-IMAGE
+
+// /api/saveimagefromurl/gt-450282912/6341351670004
+// /api/saveimagefromurl/gt-450281385/6341351670004
+
+app.get("/api/saveimagefromurl/:gtkey/:customer", (req, res) => {
+  try {
+    let gt = req.params.gtkey;
+    let customer = req.params.customer;
+    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {
+      headers: {
+        Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
+        'X-PF-Store-ID': process.env.STORE_ID
+      }
+    }).then(resp => {
+
+    let gt = req.params.gtkey;
+      fs.mkdirSync(`./customers/${customer}/${gt}`, { recursive: true })
+
+      let arrLinkToImage = resp.data.result.mockups;
+      arrLinkToImage.forEach((element, index) => {
+        fetch(element.mockup_url).then(res => {
+          res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
+        });
+      });
+      res.send({
+        "gt": gt,
+        "customer": customer
+      })
+
+    });
+  }catch (err) {
+      console.log(err);
+  }
+});
+
+
+
+
+// GT-IMAGE + save image
 app.get('/api/gtkey/:gtkey', function (req, res) {
   try {
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gtkey}`, {
@@ -50,12 +88,13 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
     }).then(resp => {
       res.json(resp.data);
 
-      let arrLinkToImage = resp.data.result.mockups;
-      arrLinkToImage.forEach((element, index) => {
-        fetch(element.mockup_url).then(res => {
-          res.body.pipe(fs.createWriteStream(`./customers/img-${index}.png`));
-        });
-      });
+      // save image
+      // let arrLinkToImage = resp.data.result.mockups;
+      // arrLinkToImage.forEach((element, index) => {
+      //   fetch(element.mockup_url).then(res => {
+      //     res.body.pipe(fs.createWriteStream(`./customers/img-${index}.png`));
+      //   });
+      // });
 
     });
   }
@@ -64,7 +103,7 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
   }
 });
 
-// IMAGE
+// IMAGE not from gt
 app.get('/api/image/:prodId', function(req, res) {
   try {
     axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {
@@ -84,6 +123,8 @@ app.use('/static', express.static(__dirname + '/customers'));
 app.get("/api/template/:templateId", (req, res) => {
   if (req.params.templateId) {
     try {
+      // let gtkey = "";
+
       axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, {
         headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}
       }).then(resTemplates => {
@@ -100,17 +141,33 @@ app.get("/api/template/:templateId", (req, res) => {
           }
         }
       )
-      }).then(resMockup => {
-        res.json(resMockup.data.result.task_key);
+      }).then( (resMockup) => {
+        // gtkey = resMockup.data.result.task_key;
 
-        // let linkToImage = resMockup.data.result.mockup_url;
-        // let nameImage = 'img-1.png';
-      
-        // fetch(linkToImage).then(res => {
-        //   res.body.pipe(fs.createWriteStream(`./customers/${nameImage}`));
+        // await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${gtkey}`, {
+        //   headers: {
+        //     Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
+        //     'X-PF-Store-ID': process.env.STORE_ID
+        //   }
+        }).then(resp => {
+
+          // console.log(resp)
+
+          // let arrLinkToImage = resp.data.result.mockups;
+          // arrLinkToImage.forEach((element, index) => {
+          //   fetch(element.mockup_url).then(res => {
+          //     res.body.pipe(fs.createWriteStream(`./customers/img-${index}.png`));
+          //   });
+          // });
         // });
 
+
+        res.json(resMockup.data.result.task_key);
       })
+
+      
+
+
     }
     catch (err) {
         console.log(err)
