@@ -19,7 +19,7 @@ app.use(fileupload({
 
 
 app.get("/", async (req, res) => {
-  res.send('Server!.');
+  res.send('Server!');
 });
 
 // NONCES
@@ -45,6 +45,8 @@ app.get("/api/nonces/:userId", async (req, res) => {
 // /api/saveimagefromurl/gt-450281385/6341351670004
 // https://test-server-nzly.onrender.com/api/saveimagefromurl/gt-451491011/6341351670004
 
+app.use('/static', express.static(__dirname + '/tmp'));
+
 app.get("/api/saveimagefromurl/:gtkey/:customer", (req, res) => {
   try {
     let gt = req.params.gtkey;
@@ -57,12 +59,12 @@ app.get("/api/saveimagefromurl/:gtkey/:customer", (req, res) => {
     }).then(resp => {
 
     let gt = req.params.gtkey;
-      fs.mkdirSync(`./customers/${customer}/${gt}`, { recursive: true })
+      fs.mkdirSync(`./tmp/${customer}/${gt}`, { recursive: true })
 
       let arrLinkToImage = resp.data.result.mockups;
       arrLinkToImage.forEach((element, index) => {
         fetch(element.mockup_url).then(res => {
-          res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
+          res.body.pipe(fs.createWriteStream(`./tmp/${customer}/${gt}/image-${index}.png`));
         });
       });
       res.send({
@@ -107,14 +109,10 @@ app.get('/api/image/:prodId', function(req, res) {
   }
 });
 
-app.use('/static', express.static(__dirname + '/customers'));
-
 // TASK_KEY
 app.get("/api/template/:templateId", (req, res) => {
   if (req.params.templateId) {
     try {
-      // let gtkey = "";
-
       axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, {
         headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}
       }).then(resTemplates => {
