@@ -59,7 +59,7 @@ app.get("/api/saveimagefromurl/:gtkey/:customer", (req, res) => {
     }).then(resp => {
 
     let gt = req.params.gtkey;
-      fs.mkdirSync(`./tmp/${customer}/${gt}`, { recursive: true })
+      // fs.mkdirSync(`./tmp/${customer}/${gt}`, { recursive: true })
 
       let arrLinkToImage = resp.data.result.mockups;
       arrLinkToImage.forEach((element, index) => {
