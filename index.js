@@ -64,7 +64,7 @@ app.get("/api/saveimagefromurl/:gtkey/:customer", (req, res) => {
       let arrLinkToImage = resp.data.result.mockups;
       arrLinkToImage.forEach((element, index) => {
         fetch(element.mockup_url).then(res => {
-          res.body.pipe(fs.createWriteStream(`./tmp/${customer}/${gt}/image-${index}.png`));
+          res.body.pipe(fs.createWriteStream(`/tmp/${customer}/${gt}/image-${index}.png`));
         });
       });
       res.send({
