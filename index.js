@@ -97,7 +97,6 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
             let gt = resMockup.data.result.task_key;
             let customer = req.params.customer;
             // fs.mkdirSync(`./customers/${customer}/${gt}`, { recursive: true });
-
             axios.get(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, 
               {
                 headers: {
@@ -111,7 +110,6 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                 arrLinkToImage.forEach((element, index) => {
                   fetch(element.mockup_url).then(res => {
                     // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
-
                     cloudinary.uploader
                       .upload(element.mockup_url, {
                         resource_type: "image",
@@ -125,7 +123,6 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
               }
             });
           }, 5000);
-
         })
     }
     catch (err) {
