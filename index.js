@@ -8,6 +8,15 @@ var bodyParser = require('body-parser');
 const fileupload = require('express-fileupload');
 const fetch = require('node-fetch');
 const fs = require('fs');
+
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+  secure: true,
+});
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(fileupload({
@@ -39,46 +48,6 @@ app.get("/api/nonces/:userId", async (req, res) => {
   }
 });
 
-
-
-// /api/saveimagefromurl/gt-450282912/6341351670004
-// /api/saveimagefromurl/gt-450281385/6341351670004
-// https://test-server-nzly.onrender.com/api/saveimagefromurl/gt-451491011/6341351670004
-
-app.use('/static', express.static(__dirname + '/tmp'));
-
-app.get("/api/saveimagefromurl/:gtkey/:customer", (req, res) => {
-  try {
-    let gt = req.params.gtkey;
-    let customer = req.params.customer;
-    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
-        'X-PF-Store-ID': process.env.STORE_ID
-      }
-    }).then(resp => {
-
-      let gt = req.params.gtkey;
-      fs.mkdirSync(`./tmp/${customer}/${gt}`, { recursive: true })
-
-      let arrLinkToImage = resp.data.result.mockups;
-      arrLinkToImage.forEach((element, index) => {
-        fetch(element.mockup_url).then(res => {
-          res.body.pipe(fs.createWriteStream(`./tmp/${customer}/${gt}/image-${index}.png`));
-          // res.body.pipe(fs.createWriteStream(`/tmp/image-${index}.png`));
-        });
-      });
-      res.send({
-        "gt": gt,
-        "customer": customer
-      })
-
-    });
-  }catch (err) {
-      console.log(err);
-  }
-});
-
 // GT-IMAGE + save image
 app.get('/api/gtkey/:gtkey', function (req, res) {
   try {
@@ -96,6 +65,75 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
   }
 });
 
+// app.use('/static', express.static(__dirname + '/customers'));
+
+// TASK_KEY
+app.get("/api/template/:templateId/:customer", (req, res) => {
+  if (req.params.templateId) {
+    try {
+      
+      axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, 
+        {
+          headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}
+        }
+      ).then( (resTemplates) => {
+        return axios.post(`https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
+          {
+            "variant_ids": resTemplates.data.result.available_variant_ids,
+            "format": "jpg",
+            "product_template_id": resTemplates.data.result.id
+          },
+          {
+            headers: {
+              'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+              'X-PF-Store-ID': process.env.STORE_ID
+            }
+          }
+        )
+        }).then((resMockup) => {
+          res.json(resMockup.data.result.task_key);
+
+          setTimeout(() => {
+            let gt = resMockup.data.result.task_key;
+            let customer = req.params.customer;
+            // fs.mkdirSync(`./customers/${customer}/${gt}`, { recursive: true });
+
+            axios.get(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, 
+              {
+                headers: {
+                  Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
+                  'X-PF-Store-ID': process.env.STORE_ID
+                }
+              }
+            ).then(resp => {
+              let arrLinkToImage = resp.data.result.mockups;
+              if (arrLinkToImage.length > 0) {
+                arrLinkToImage.forEach((element, index) => {
+                  fetch(element.mockup_url).then(res => {
+                    // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
+
+                    cloudinary.uploader
+                      .upload(element.mockup_url, {
+                        resource_type: "image",
+                        public_id: `customers/${customer}/${gt}/image-${index}`,
+                        overwrite: true
+                      });
+
+
+                  });
+                });
+              }
+            });
+          }, 5000);
+
+        })
+    }
+    catch (err) {
+        console.log(err)
+    }
+  }
+});
+
 // IMAGE not from gt
 app.get('/api/image/:prodId', function(req, res) {
   try {
@@ -107,36 +145,6 @@ app.get('/api/image/:prodId', function(req, res) {
   }
   catch (err) {
       console.log(err)
-  }
-});
-
-// TASK_KEY
-app.get("/api/template/:templateId", (req, res) => {
-  if (req.params.templateId) {
-    try {
-      axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, {
-        headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}
-      }).then(resTemplates => {
-        return axios.post(`https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
-        {
-          "variant_ids": resTemplates.data.result.available_variant_ids,
-          "format": "jpg",
-          "product_template_id": resTemplates.data.result.id
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-            'X-PF-Store-ID': process.env.STORE_ID
-          }
-        }
-      )
-      }).then( (resMockup) => {
-        res.json(resMockup.data.result.task_key);
-      })
-    }
-    catch (err) {
-        console.log(err)
-    }
   }
 });
 
@@ -228,6 +236,17 @@ app.post('/api/changemetafield', function(req, res) {
   try {
     const customerId = req.body.customer_id;
     const product_template = req.body.product_template;
+
+    gt = product_template.match(/:(.*)/)[1];
+    const dir = `./customers/${customerId}/${gt}`;
+
+    fs.rmdir(dir, { recursive: true, force: true }, err => {
+      if (err) {
+        throw err
+      }
+      console.log(`${dir} is deleted!`)
+    })
+
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
       headers: {
         'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
@@ -363,7 +382,6 @@ app.post('/api/logocollection/:userId', function(req, res) {
 app.get('/api/logocollection', function(req, res) {
   res.json(arrImageColl);
 });
-
 
 app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
