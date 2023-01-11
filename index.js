@@ -66,8 +66,7 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
 });
 
 // app.use('/static', express.static(__dirname + '/customers'));
-
-// TASK_KEY
+// TASK_KEY + CLOUDINARY
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
     try {
