@@ -243,12 +243,16 @@ app.post('/api/changemetafield', function(req, res) {
     //   console.log(`${dir} is deleted!`)
     // })
 
-    cloudinary.uploader
-      .destroy(`customers/${customerId}/${product_template}`, {resource_type: 'image'})
-      .then((result) => {
-        console.log(result);
-        res.json(result);
-      });
+    // cloudinary.uploader
+    //   .destroy(`customers/${customerId}/${product_template}`, {resource_type: 'image'})
+    //   .then((result) => {
+    //     console.log(result);
+    //     res.json(result);
+    //   });
+
+      cloudinary.api
+        .delete_folder(`customers/${customerId}/${product_template}`)
+        .then(result => console.log(result));
 
 
 
