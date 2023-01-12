@@ -245,7 +245,11 @@ app.post('/api/changemetafield', function(req, res) {
 
     cloudinary.uploader
       .destroy(`customers/${customerId}/${product_template}`, {resource_type: 'image'})
-      .then(result => console.log(result));
+      .then((result) => {
+        console.log(result);
+        res.json(result);
+      });
+
 
 
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
