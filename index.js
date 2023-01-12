@@ -247,18 +247,6 @@ app.post('/api/changemetafield', function(req, res) {
     const customerId = req.body.customer_id;
     const product_template = req.body.product_template;
 
-    cloudinary.api
-      .delete_resources_by_prefix(`customers/${customerId}/${product_template}`, function(result){})
-      .then(() => {
-        cloudinary.api
-          .delete_folder(`customers/${customerId}/${product_template}`)
-          .then((result) => {
-            res.json(result);
-          });
-      })
-
-
-
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
       headers: {
         'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
@@ -281,6 +269,16 @@ app.post('/api/changemetafield', function(req, res) {
         }
       };
       axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+
+      cloudinary.api
+        .delete_resources_by_prefix(`customers/${customerId}/${product_template}`, function(result){})
+        .then(() => {
+          cloudinary.api
+            .delete_folder(`customers/${customerId}/${product_template}`)
+            .then((result) => {
+              res.json(result);
+            });
+        })
     })
   }
   catch (err) {
