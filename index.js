@@ -231,10 +231,10 @@ app.post('/api/sendmetafield', function(req, res) {
 
 app.get('/test', function(req, res) {
   cloudinary.api
-    .delete_resources_by_prefix('customers/6341351670004/gt-458754794', function(result){})
+    .delete_resources_by_prefix('customers/6341351670004/gt-458764948', function(result){})
     .then(() => {
       cloudinary.api
-        .delete_folder(`customers/6341351670004/gt-458754794`)
+        .delete_folder(`customers/6341351670004/gt-458764948`)
         .then((result) => {
           res.json(result);
         });
@@ -246,22 +246,6 @@ app.post('/api/changemetafield', function(req, res) {
   try {
     const customerId = req.body.customer_id;
     const product_template = req.body.product_template;
-
-    // gt = product_template.match(/:(.*)/)[1];
-    // const dir = `./customers/${customerId}/${gt}`;
-    // fs.rmdir(dir, { recursive: true, force: true }, err => {
-    //   if (err) {
-    //     throw err
-    //   }
-    //   console.log(`${dir} is deleted!`)
-    // })
-
-    // cloudinary.uploader
-    //   .destroy(`customers/${customerId}/${product_template}`, {resource_type: 'image'})
-    //   .then((result) => {
-    //     console.log(result);
-    //     res.json(result);
-    //   });
 
     cloudinary.api
       .delete_resources_by_prefix(`customers/${customerId}/${product_template}`, function(result){})
