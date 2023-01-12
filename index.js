@@ -228,6 +228,19 @@ app.post('/api/sendmetafield', function(req, res) {
   }
 });
 
+
+app.get('/test', function(req, res) {
+  cloudinary.api
+    .delete_resources_by_prefix('customers/6341351670004/gt-458754794', function(result){})
+    .then(() => {
+      cloudinary.api
+        .delete_folder(`customers/6341351670004/gt-458754794`)
+        .then((result) => {
+          res.json(result);
+        });
+    })
+});
+
 // METAFIELDS remove products
 app.post('/api/changemetafield', function(req, res) {
   try {
@@ -250,9 +263,15 @@ app.post('/api/changemetafield', function(req, res) {
     //     res.json(result);
     //   });
 
-      cloudinary.api
-        .delete_folder(`customers/${customerId}/${product_template}`)
-        .then(result => console.log(result));
+    cloudinary.api
+      .delete_resources_by_prefix(`customers/${customerId}/${product_template}`, function(result){})
+      .then(() => {
+        cloudinary.api
+          .delete_folder(`customers/${customerId}/${product_template}`)
+          .then((result) => {
+            res.json(result);
+          });
+      })
 
 
 
