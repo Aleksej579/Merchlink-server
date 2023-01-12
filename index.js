@@ -66,6 +66,7 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
 });
 
 // app.use('/static', express.static(__dirname + '/customers'));
+
 // TASK_KEY + CLOUDINARY
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
@@ -233,15 +234,19 @@ app.post('/api/changemetafield', function(req, res) {
     const customerId = req.body.customer_id;
     const product_template = req.body.product_template;
 
-    gt = product_template.match(/:(.*)/)[1];
-    const dir = `./customers/${customerId}/${gt}`;
+    // gt = product_template.match(/:(.*)/)[1];
+    // const dir = `./customers/${customerId}/${gt}`;
+    // fs.rmdir(dir, { recursive: true, force: true }, err => {
+    //   if (err) {
+    //     throw err
+    //   }
+    //   console.log(`${dir} is deleted!`)
+    // })
 
-    fs.rmdir(dir, { recursive: true, force: true }, err => {
-      if (err) {
-        throw err
-      }
-      console.log(`${dir} is deleted!`)
-    })
+    cloudinary.uploader
+      .destroy(`customers/${customerId}/${product_template}`, {resource_type: 'image'})
+      .then(result => console.log(result));
+
 
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
       headers: {
