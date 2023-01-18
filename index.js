@@ -34,7 +34,7 @@ app.get("/", async (req, res) => {
 
 
 app.get("/test", async (req, res) => {
-  axios.get(`https://api.printful.com/mockup-generator/task?task_key=gt-461385146`, 
+  axios.get(`https://api.printful.com/mockup-generator/task?task_key=gt-461670722`, 
     {
       headers: {
         Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
@@ -121,36 +121,35 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                   'X-PF-Store-ID': process.env.STORE_ID
                 }
               }
-            ).then(resp => {
+            ).then(async (resp) => {
               let arrLinkToImage = resp.data.result.mockups;
-              if (arrLinkToImage.length > 0) {
-                arrLinkToImage.forEach((element, index) => {
-                  fetch(element.mockup_url).then(res => {
-                    // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
-                    cloudinary.uploader
-                      .upload(element.mockup_url, {
-                        resource_type: "image",
-                        public_id: `customers/${customer}/${gt}/image-${index}`,
-                        overwrite: true
-                      });
-                  });
-                });
-              }
-
               let arrLinkToImagePrintfiles = resp.data.result.printfiles;
-              if (arrLinkToImagePrintfiles.length > 0) {
-                arrLinkToImagePrintfiles.forEach((element, index) => {
-                  fetch(element.url).then(res => {
-                    // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
-                    cloudinary.uploader
-                      .upload(element.url, {
-                        resource_type: "image",
-                        public_id: `customers/${customer}/${gt}/image__printfiles-${index}`,
-                        overwrite: true
-                      });
-                  });
+
+              await arrLinkToImage.forEach((element, index) => {
+                fetch(element.mockup_url).then(res => {
+                  // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
+                  cloudinary.uploader
+                    .upload(element.mockup_url, {
+                      resource_type: "image",
+                      public_id: `customers/${customer}/${gt}/image-${index}`,
+                      overwrite: true
+                    });
                 });
-              }
+              });
+
+              await arrLinkToImagePrintfiles.forEach((element, index) => {
+                fetch(element.url).then(res => {
+                  // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
+                  cloudinary.uploader
+                    .upload(element.url, {
+                      resource_type: "image",
+                      public_id: `customers/${customer}/${gt}/image__printfiles-${index}`,
+                      overwrite: true
+                    });
+                });
+              });
+
+
             });
           }, 5000);
         })
