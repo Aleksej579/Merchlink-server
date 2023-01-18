@@ -32,18 +32,13 @@ app.get("/", async (req, res) => {
 });
 
 
-
-app.get("/test", async (req, res) => {
-  axios.get(`https://api.printful.com/mockup-generator/task?task_key=gt-461670722`, 
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
-        'X-PF-Store-ID': process.env.STORE_ID
-      }
-    }
-  ).then(resp => {
-    res.json(resp.data);
-  });
+let arr_ = [];
+app.post("/test", (req, res) => {
+  arr_.push(req.body);
+  res.json(req.body);
+});
+app.get("/test", (req, res) => {
+  res.json(arr_);
 });
 
 
@@ -137,7 +132,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                 });
               });
 
-              
+
               await arrLinkToImagePrintfiles.forEach((element, index) => {
                 fetch(element.url).then(res => {
                   // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
@@ -192,7 +187,8 @@ app.post('/api/orderprintful', async function(req, res) {
           "variant_id": `${response.data.result.printfiles[0].variant_ids}`,
           "files": [{
             "placement": `${response.data.result.printfiles[0].placement}`,
-            "url": `${response.data.result.printfiles[0].url}`
+            // "url": `${response.data.result.printfiles[0].url}`
+            "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${userIdNumber}/${keyGt}/image__printfiles-${0}.jpg`
           }]
         });
       })
