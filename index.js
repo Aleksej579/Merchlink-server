@@ -31,7 +31,9 @@ app.get("/", async (req, res) => {
   res.send('Server!');
 });
 
-
+// 6341351670004 user id
+// cost F7R6E70TDM6D
+// free ship YDJZPN3C2JSB
 let arr_ = [];
 app.post("/test", (req, res) => {
   arr_.push(req.body);
@@ -188,7 +190,7 @@ app.post('/api/orderprintful', async function(req, res) {
           "files": [{
             "placement": `${response.data.result.printfiles[0].placement}`,
             // "url": `${response.data.result.printfiles[0].url}`
-            "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${userIdNumber}/${keyGt}/image__printfiles-${0}.jpg`
+            "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
           }]
         });
       })
