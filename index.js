@@ -137,6 +137,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                 });
               });
 
+              
               await arrLinkToImagePrintfiles.forEach((element, index) => {
                 fetch(element.url).then(res => {
                   // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
