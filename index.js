@@ -31,13 +31,10 @@ app.get("/", async (req, res) => {
   res.send('Server!');
 });
 
-// 6341351670004 user id
-// cost F7R6E70TDM6D
-// free ship YDJZPN3C2JSB
+
 let arr_ = [];
 app.post("/test", (req, res) => {
   arr_.push(req.body);
-  res.json(req.body);
 });
 app.get("/test", (req, res) => {
   res.json(arr_);
