@@ -31,14 +31,15 @@ app.get("/", async (req, res) => {
   res.send('Server!');
 });
 
+// https://test-server-v2.vercel.app/test
 
-let arr_ = [];
-app.post("/test", (req, res) => {
-  arr_.push(req.body);
-});
-app.get("/test", (req, res) => {
-  res.json(arr_);
-});
+// let arr_ = [];
+// app.post("/test", (req, res) => {
+//   arr_.push(req.body);
+// });
+// app.get("/test", (req, res) => {
+//   res.json(arr_);
+// });
 
 
 
@@ -172,8 +173,11 @@ app.get('/api/image/:prodId', function(req, res) {
 // ORDER
 let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
+  const arrProperty = [];
+
   for(let [index, item] of req.body.line_items.entries()) {
-    const keyGt = item.properties[0].value;
+    const keyGt = item.properties[0]?.value;
+    arrProperty.push(item.properties[0]?.value);
     try {
       await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
         headers: {
@@ -196,26 +200,28 @@ app.post('/api/orderprintful', async function(req, res) {
       console.log(err);
     }
   }
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-    'X-PF-Store-ID': process.env.STORE_ID
-  };
-  const body = {
-    "recipient": {
-      "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
-      "address1": `${req.body.customer.default_address.address1}`,
-      "city": `${req.body.customer.default_address.city}`,
-      "state_code": `${req.body.customer.default_address.province_code}`,
-      "country_code": `${req.body.customer.default_address.country_code}`,
-      "zip": `${req.body.customer.default_address.zip}`
-    },
-    "items": arrBody
-  };
-  axios.post("https://api.printful.com/orders", body, { headers })
-    .then((response) => {
-      res.json(response.data);
-    });
+  if ( !!arrProperty.length ) {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+      'X-PF-Store-ID': process.env.STORE_ID
+    };
+    const body = {
+      "recipient": {
+        "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
+        "address1": `${req.body.customer.default_address.address1}`,
+        "city": `${req.body.customer.default_address.city}`,
+        "state_code": `${req.body.customer.default_address.province_code}`,
+        "country_code": `${req.body.customer.default_address.country_code}`,
+        "zip": `${req.body.customer.default_address.zip}`
+      },
+      "items": arrBody
+    };
+    axios.post("https://api.printful.com/orders", body, { headers })
+      .then((response) => {
+        res.json(response.data);
+      });
+  }
 });
 app.get('/api/orderprintful', function(req, res) {
   res.json(arrBody);
