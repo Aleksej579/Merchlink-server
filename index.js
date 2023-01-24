@@ -176,7 +176,7 @@ app.post('/api/orderprintful', async function(req, res) {
   const arrProperty = [];
   for(let [index, item] of req.body.line_items.entries()) {
     const keyGt = item.properties[0].value;
-    arrProperty.push(item.properties[0]?.value);
+    arrProperty.push(item.properties[0].value);
     try {
       await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
         headers: {
