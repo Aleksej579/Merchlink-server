@@ -1,0 +1,157 @@
+{
+  "code": 200,
+  "result": {
+    "id": 88338536,
+    "external_id": "4128",
+    "store": 5651474,
+    "status": "canceled",
+    "error": null,
+    "errorCode": 0,
+    "shipping": "STANDARD",
+    "shipping_service_name": "Flat Rate (3-4 business days after fulfillment)",
+    "created": 1674061527,
+    "updated": 1674061658,
+    "recipient": {
+      "name": "Aleksej Eremenko",
+      "company": null,
+      "address1": "Test",
+      "address2": null,
+      "city": "Test",
+      "state_code": "AL",
+      "state_name": "Alabama",
+      "country_code": "US",
+      "country_name": "United States",
+      "zip": "35242",
+      "phone": null,
+      "email": "aleksej.eremenko579@gmail.com",
+      "tax_number": null
+    },
+    "notes": null,
+    "incomplete_items": [],
+    "is_sample": false,
+    "needs_approval": false,
+    "not_synced": false,
+    "has_discontinued_items": false,
+    "can_change_hold": false,
+    "costs": {
+      "currency": "USD",
+      "subtotal": "0.00",
+      "discount": "0.00",
+      "shipping": "0.00",
+      "digitization": "0.00",
+      "additional_fee": "0.00",
+      "fulfillment_fee": "0.00",
+      "tax": "0.00",
+      "vat": "0.00",
+      "total": "0.00"
+    },
+    "dashboard_url": "https://www.printful.com/dashboard?order_id=88338536",
+    "pricing_breakdown": [
+      {
+        "customer_pays": "10.49",
+        "printful_price": "0",
+        "profit": "10.49",
+        "currency_symbol": "USD"
+      }
+    ],
+    "items": [
+      {
+        "id": 60411303,
+        "external_id": "12813163462900",
+        "variant_id": 10798,
+        "sync_variant_id": 3524007630,
+        "external_variant_id": "43368549908724",
+        "quantity": 1,
+        "price": "19.95",
+        "retail_price": "30.50",
+        "name": "321HOOPS Stainless Steel Water Bottle",
+        "product": {
+          "variant_id": 10798,
+          "product_id": 382,
+          "image": "https://files.cdn.printful.com/products/382/10798_1614007341.jpg",
+          "name": "Stainless Steel Water Bottle 17oz"
+        },
+        "files": [
+          {
+            "id": 472126394,
+            "type": "default",
+            "hash": "9cbb272bf023c87979bc66131fa190bd",
+            "url": null,
+            "filename": "kyles-klub_full-color_printful-logo.ai",
+            "mime_type": "application/pdf",
+            "size": 1417552,
+            "width": 2000,
+            "height": 1689,
+            "dpi": 72,
+            "status": "ok",
+            "created": 1664467483,
+            "thumbnail_url": "https://files.cdn.printful.com/files/9cb/9cbb272bf023c87979bc66131fa190bd_thumb.png",
+            "preview_url": "https://files.cdn.printful.com/files/9cb/9cbb272bf023c87979bc66131fa190bd_preview.png",
+            "visible": true,
+            "is_temporary": false
+          },
+          {
+            "id": 472127142,
+            "type": "preview",
+            "hash": "41d1e76e3e3f592343ab3192265435a8",
+            "url": null,
+            "filename": "stainless-steel-water-bottle-white-17oz-front-6335c2b1c050c.jpg",
+            "mime_type": "image/jpeg",
+            "size": 221863,
+            "width": 2000,
+            "height": 2000,
+            "dpi": null,
+            "status": "ok",
+            "created": 1664467640,
+            "thumbnail_url": "https://files.cdn.printful.com/files/41d/41d1e76e3e3f592343ab3192265435a8_thumb.png",
+            "preview_url": "https://files.cdn.printful.com/files/41d/41d1e76e3e3f592343ab3192265435a8_preview.png",
+            "visible": false,
+            "is_temporary": false
+          }
+        ],
+        "options": [],
+        "sku": null,
+        "discontinued": false,
+        "out_of_stock": false
+      }
+    ],
+    "branding_items": [],
+    "shipments": [
+      {
+        "id": 38962322,
+        "status": "canceled",
+        "carrier": "USPS",
+        "service": "USPS First Class Mail",
+        "tracking_number": null,
+        "tracking_url": "https://myorders.co/tracking/38962322/",
+        "created": null,
+        "ship_date": null,
+        "shipped_at": null,
+        "reshipment": false,
+        "location": "US",
+        "items": [
+          {
+            "item_id": 60411303,
+            "quantity": 1,
+            "picked": 0,
+            "printed": 0
+          }
+        ],
+        "packing_slip_url": "https://www.printful.com/dashboard/default/packing-slip?shipmentId=38962322",
+        "can_change_hold": false
+      }
+    ],
+    "packing_slip": null,
+    "retail_costs": {
+      "currency": "USD",
+      "subtotal": "30.50",
+      "discount": "30.50",
+      "shipping": "10.49",
+      "tax": "0.00",
+      "vat": null,
+      "total": "10.49"
+    },
+    "gift": null
+  },
+  "extra": []
+}

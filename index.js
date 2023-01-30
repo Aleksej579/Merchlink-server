@@ -171,35 +171,37 @@ app.get('/api/image/:prodId', function(req, res) {
 });
 
 // ORDER
-let arrBody = [];
+// let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
-  const arrProperty = [];
+  let arrBody = [];
   for(let [index, item] of req.body.line_items.entries()) {
-    const keyGt = item.properties[0].value;
-    arrProperty.push(item.properties[0].value);
-    try {
-      await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
-        headers: {
-          Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
-          'X-PF-Store-ID': process.env.STORE_ID
-        }
-      }).then(response => {
-        arrBody.push({
-          "quantity": `${req.body.line_items[index].quantity}`,
-          "variant_id": `${response.data.result.printfiles[0].variant_ids}`,
-          "files": [{
-            "placement": `${response.data.result.printfiles[0].placement}`,
-            // "url": `${response.data.result.printfiles[0].url}`
-            "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
-          }]
-        });
-      })
-    }
-    catch (err) {
-      console.log(err);
+    if (item.properties.length > 0) {    
+      try {
+        const keyGt = item.properties[0].value;
+        await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
+          headers: {
+            Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
+            'X-PF-Store-ID': process.env.STORE_ID
+          }
+        }).then(response => {
+          arrBody.push({
+            "quantity": `${req.body.line_items[index].quantity}`,
+            "variant_id": `${response.data.result.printfiles[0].variant_ids}`,
+            "files": [{
+              "placement": `${response.data.result.printfiles[0].placement}`,
+              // "url": `${response.data.result.printfiles[0].url}`
+              "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
+            }]
+          });
+        })
+      }
+      catch (err) {
+        console.log(err);
+      }
     }
   }
-  if ( !!arrProperty.length ) {
+
+  if (arrBody.length > 0) {
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
@@ -216,15 +218,16 @@ app.post('/api/orderprintful', async function(req, res) {
       },
       "items": arrBody
     };
-    axios.post("https://api.printful.com/orders", body, { headers })
+    // axios.post("https://api.printful.com/orders", body, { headers })
+    axios.put(`https://api.printful.com/orders${req.body.name}`, body, { headers })
       .then((response) => {
         res.json(response.data);
       });
   }
 });
-app.get('/api/orderprintful', function(req, res) {
-  res.json(arrBody);
-});
+// app.get('/api/orderprintful', function(req, res) {
+//   res.json(arrBody);
+// });
 
 // METAFIELDS
 app.post('/api/sendmetafield', function(req, res) {
