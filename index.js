@@ -171,9 +171,9 @@ app.get('/api/image/:prodId', function(req, res) {
 });
 
 // ORDER
-// let arrBody = [];
+let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
-  let arrBody = [];
+  // let arrBody = [];
   for(let [index, item] of req.body.line_items.entries()) {
     if (item.properties.length > 0) {    
       try {
@@ -222,13 +222,13 @@ app.post('/api/orderprintful', async function(req, res) {
     // axios.put(`https://api.printful.com/orders${req.body.name}`, body, { headers })
       .then((response) => {
         res.json(response.data);
+        arrBody.length = 0;
       });
   }
 });
-
-// app.get('/api/orderprintful', function(req, res) {
-//   res.json(arrBody);
-// });
+app.get('/api/orderprintful', function(req, res) {
+  res.json(arrBody);
+});
 
 // METAFIELDS
 app.post('/api/sendmetafield', function(req, res) {
