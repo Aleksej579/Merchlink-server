@@ -170,10 +170,9 @@ app.get('/api/image/:prodId', function(req, res) {
   }
 });
 
-// ORDER
+// ORDER   https://test-server-v2.vercel.app/api/orderprintful
 let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
-  // let arrBody = [];
   for(let [index, item] of req.body.line_items.entries()) {
     if (item.properties.length > 0) {    
       try {
