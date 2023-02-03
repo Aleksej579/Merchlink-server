@@ -1,16 +1,16 @@
 {
   "code": 200,
   "result": {
-    "id": 88338536,
-    "external_id": "4128",
+    "id": 88990164,
+    "external_id": "4287",
     "store": 5651474,
     "status": "canceled",
     "error": null,
     "errorCode": 0,
     "shipping": "STANDARD",
     "shipping_service_name": "Flat Rate (3-4 business days after fulfillment)",
-    "created": 1674061527,
-    "updated": 1674061658,
+    "created": 1675341449,
+    "updated": 1675341545,
     "recipient": {
       "name": "Aleksej Eremenko",
       "company": null,
@@ -45,71 +45,236 @@
       "vat": "0.00",
       "total": "0.00"
     },
-    "dashboard_url": "https://www.printful.com/dashboard?order_id=88338536",
+    "dashboard_url": "https://www.printful.com/dashboard?order_id=88990164",
     "pricing_breakdown": [
       {
-        "customer_pays": "10.49",
+        "customer_pays": "9.99",
         "printful_price": "0",
-        "profit": "10.49",
+        "profit": "9.99",
         "currency_symbol": "USD"
       }
     ],
     "items": [
       {
-        "id": 60411303,
-        "external_id": "12813163462900",
-        "variant_id": 10798,
-        "sync_variant_id": 3524007630,
-        "external_variant_id": "43368549908724",
+        "id": 60993041,
+        "external_id": "12842401759476",
+        "variant_id": 10779,
+        "sync_variant_id": 3543381065,
+        "external_variant_id": "43436594430196",
         "quantity": 1,
-        "price": "19.95",
-        "retail_price": "30.50",
-        "name": "321HOOPS Stainless Steel Water Bottle",
+        "price": "25.95",
+        "retail_price": "48.00",
+        "name": "0xApes Unisex Hoodie - Black / S",
         "product": {
-          "variant_id": 10798,
-          "product_id": 382,
-          "image": "https://files.cdn.printful.com/products/382/10798_1614007341.jpg",
-          "name": "Stainless Steel Water Bottle 17oz"
+          "variant_id": 10779,
+          "product_id": 380,
+          "image": "https://files.cdn.printful.com/products/380/10779_1642689891.jpg",
+          "name": "Cotton Heritage M2580 Premium Unisex Hoodie (Black / S)"
         },
         "files": [
           {
-            "id": 472126394,
+            "id": 476735093,
             "type": "default",
-            "hash": "9cbb272bf023c87979bc66131fa190bd",
+            "hash": "69d50ff535743ca99367f90fd754bb32",
             "url": null,
-            "filename": "kyles-klub_full-color_printful-logo.ai",
+            "filename": "Ape_Block.ai",
             "mime_type": "application/pdf",
-            "size": 1417552,
-            "width": 2000,
-            "height": 1689,
-            "dpi": 72,
+            "size": 1216273,
+            "width": 800,
+            "height": 774,
+            "dpi": 160,
             "status": "ok",
-            "created": 1664467483,
-            "thumbnail_url": "https://files.cdn.printful.com/files/9cb/9cbb272bf023c87979bc66131fa190bd_thumb.png",
-            "preview_url": "https://files.cdn.printful.com/files/9cb/9cbb272bf023c87979bc66131fa190bd_preview.png",
+            "created": 1665507825,
+            "thumbnail_url": "https://files.cdn.printful.com/files/69d/69d50ff535743ca99367f90fd754bb32_thumb.png",
+            "preview_url": "https://files.cdn.printful.com/files/69d/69d50ff535743ca99367f90fd754bb32_preview.png",
             "visible": true,
             "is_temporary": false
           },
           {
-            "id": 472127142,
+            "id": 476735628,
             "type": "preview",
-            "hash": "41d1e76e3e3f592343ab3192265435a8",
+            "hash": "c2e3ef9431e3ca3866f426dc74c4218d",
             "url": null,
-            "filename": "stainless-steel-water-bottle-white-17oz-front-6335c2b1c050c.jpg",
+            "filename": "unisex-premium-hoodie-black-front-6345a257aefce.jpg",
             "mime_type": "image/jpeg",
-            "size": 221863,
+            "size": 132552,
             "width": 2000,
             "height": 2000,
             "dpi": null,
             "status": "ok",
-            "created": 1664467640,
-            "thumbnail_url": "https://files.cdn.printful.com/files/41d/41d1e76e3e3f592343ab3192265435a8_thumb.png",
-            "preview_url": "https://files.cdn.printful.com/files/41d/41d1e76e3e3f592343ab3192265435a8_preview.png",
+            "created": 1665507934,
+            "thumbnail_url": "https://files.cdn.printful.com/files/c2e/c2e3ef9431e3ca3866f426dc74c4218d_thumb.png",
+            "preview_url": "https://files.cdn.printful.com/files/c2e/c2e3ef9431e3ca3866f426dc74c4218d_preview.png",
             "visible": false,
             "is_temporary": false
           }
         ],
-        "options": [],
+        "options": [
+          {
+            "id": "embroidery_type",
+            "value": "flat"
+          },
+          {
+            "id": "thread_colors",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors",
+            "value": []
+          },
+          {
+            "id": "thread_colors_3d",
+            "value": []
+          },
+          {
+            "id": "thread_colors_chest_left",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors_chest_left",
+            "value": []
+          },
+          {
+            "id": "thread_colors_chest_center",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors_chest_center",
+            "value": []
+          },
+          {
+            "id": "thread_colors_large_center",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors_large_center",
+            "value": []
+          },
+          {
+            "id": "thread_colors_wrist_left",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors_wrist_left",
+            "value": []
+          },
+          {
+            "id": "thread_colors_wrist_right",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors_wrist_right",
+            "value": []
+          },
+          {
+            "id": "lifelike",
+            "value": false
+          }
+        ],
+        "sku": null,
+        "discontinued": false,
+        "out_of_stock": false
+      },
+      {
+        "id": 60993042,
+        "external_id": "12842401792244",
+        "variant_id": 9596,
+        "sync_variant_id": 3358859670,
+        "external_variant_id": "43095550394612",
+        "quantity": 1,
+        "price": "13.95",
+        "retail_price": "18.50",
+        "name": "AcademicU Youth Short Sleeve T-Shirt - S",
+        "product": {
+          "variant_id": 9596,
+          "product_id": 307,
+          "image": "https://files.cdn.printful.com/products/307/9596_1581518078.jpg",
+          "name": "Bella + Canvas 3001Y Youth Short Sleeve Tee with Tear Away Label (Navy / S)"
+        },
+        "files": [
+          {
+            "id": 447602067,
+            "type": "default",
+            "hash": "6bfd9b7c59855c7631246aab8aaa7b45",
+            "url": null,
+            "filename": "5c2f3020396156135f0c4f793fae2a11.png",
+            "mime_type": "image/png",
+            "size": 84642,
+            "width": 1500,
+            "height": 1800,
+            "dpi": 150,
+            "status": "ok",
+            "created": 1658423261,
+            "thumbnail_url": "https://files.cdn.printful.com/printfile-preview/447602067/5c2f3020396156135f0c4f793fae2a11_thumb.png",
+            "preview_url": "https://files.cdn.printful.com/printfile-preview/447602067/5c2f3020396156135f0c4f793fae2a11_preview.png",
+            "visible": false,
+            "is_temporary": false
+          },
+          {
+            "id": 447602082,
+            "type": "preview",
+            "hash": "df816550111a33f26e9e92bf65773d34",
+            "url": null,
+            "filename": "youth-staple-tee-navy-front-62d987dd458c5.jpg",
+            "mime_type": "image/jpeg",
+            "size": 76386,
+            "width": 1000,
+            "height": 1000,
+            "dpi": null,
+            "status": "ok",
+            "created": 1658423263,
+            "thumbnail_url": "https://files.cdn.printful.com/files/df8/df816550111a33f26e9e92bf65773d34_thumb.png",
+            "preview_url": "https://files.cdn.printful.com/files/df8/df816550111a33f26e9e92bf65773d34_preview.png",
+            "visible": false,
+            "is_temporary": false
+          }
+        ],
+        "options": [
+          {
+            "id": "embroidery_type",
+            "value": "flat"
+          },
+          {
+            "id": "thread_colors",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors",
+            "value": []
+          },
+          {
+            "id": "thread_colors_3d",
+            "value": []
+          },
+          {
+            "id": "thread_colors_chest_left",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors_chest_left",
+            "value": []
+          },
+          {
+            "id": "thread_colors_chest_center",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors_chest_center",
+            "value": []
+          },
+          {
+            "id": "thread_colors_large_center",
+            "value": []
+          },
+          {
+            "id": "text_thread_colors_large_center",
+            "value": []
+          },
+          {
+            "id": "lifelike",
+            "value": false
+          }
+        ],
         "sku": null,
         "discontinued": false,
         "out_of_stock": false
@@ -118,12 +283,12 @@
     "branding_items": [],
     "shipments": [
       {
-        "id": 38962322,
+        "id": 39320403,
         "status": "canceled",
-        "carrier": "USPS",
-        "service": "USPS First Class Mail",
+        "carrier": "UPS",
+        "service": "UPS SurePost 1LB or greater",
         "tracking_number": null,
-        "tracking_url": "https://myorders.co/tracking/38962322/",
+        "tracking_url": "https://myorders.co/tracking/39320403/",
         "created": null,
         "ship_date": null,
         "shipped_at": null,
@@ -131,25 +296,31 @@
         "location": "US",
         "items": [
           {
-            "item_id": 60411303,
+            "item_id": 60993041,
+            "quantity": 1,
+            "picked": 0,
+            "printed": 0
+          },
+          {
+            "item_id": 60993042,
             "quantity": 1,
             "picked": 0,
             "printed": 0
           }
         ],
-        "packing_slip_url": "https://www.printful.com/dashboard/default/packing-slip?shipmentId=38962322",
+        "packing_slip_url": "https://www.printful.com/dashboard/default/packing-slip?shipmentId=39320403",
         "can_change_hold": false
       }
     ],
     "packing_slip": null,
     "retail_costs": {
       "currency": "USD",
-      "subtotal": "30.50",
-      "discount": "30.50",
-      "shipping": "10.49",
+      "subtotal": "66.50",
+      "discount": "66.50",
+      "shipping": "9.99",
       "tax": "0.00",
       "vat": null,
-      "total": "10.49"
+      "total": "9.99"
     },
     "gift": null
   },

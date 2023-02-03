@@ -218,10 +218,33 @@ app.post('/api/orderprintful', async function(req, res) {
       "items": arrBody
     };
     axios.post("https://api.printful.com/orders", body, { headers })
-    // axios.put(`https://api.printful.com/orders${req.body.name}`, body, { headers })
+    // axios.put(`https://api.printful.com/orders/@${req.body.order_number}`, body, { headers })
       .then((response) => {
         res.json(response.data);
         arrBody.length = 0;
+
+
+        // const headers_rem = {
+        //   'Content-Type': 'application/json',
+        //   'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+        //   'X-PF-Store-ID': process.env.STORE_ID
+        // };
+        // const body_rem = {
+        //   "items": [
+        //     {
+        //       "id": 26030055,
+        //       "files": [
+        //         {
+        //           "url": "https://picsum.photos/200/200?random=2"
+        //         }
+        //       ]
+        //     }
+        //   ]
+        // };
+
+
+
+
       });
   }
 });
