@@ -174,7 +174,7 @@ app.get('/api/image/:prodId', function(req, res) {
 let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
   for(let [index, item] of req.body.line_items.entries()) {
-    if (item.properties.length > 0) {    
+    if (item.properties.length > 0) {   
       try {
         const keyGt = item.properties[0].value;
         await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
@@ -197,6 +197,8 @@ app.post('/api/orderprintful', async function(req, res) {
       catch (err) {
         console.log(err);
       }
+    } else {
+      arrBody.push(item);
     }
   }
 
@@ -222,29 +224,6 @@ app.post('/api/orderprintful', async function(req, res) {
       .then((response) => {
         res.json(response.data);
         arrBody.length = 0;
-
-
-        // const headers_rem = {
-        //   'Content-Type': 'application/json',
-        //   'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-        //   'X-PF-Store-ID': process.env.STORE_ID
-        // };
-        // const body_rem = {
-        //   "items": [
-        //     {
-        //       "id": 26030055,
-        //       "files": [
-        //         {
-        //           "url": "https://picsum.photos/200/200?random=2"
-        //         }
-        //       ]
-        //     }
-        //   ]
-        // };
-
-
-
-
       });
   }
 });
