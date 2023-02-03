@@ -220,7 +220,6 @@ app.post('/api/orderprintful', async function(req, res) {
       "items": arrBody
     };
     axios.post("https://api.printful.com/orders", body, { headers })
-    // axios.put(`https://api.printful.com/orders/@${req.body.order_number}`, body, { headers })
       .then((response) => {
         res.json(response.data);
         arrBody.length = 0;
