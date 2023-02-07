@@ -160,9 +160,7 @@ app.get('/api/image/:prodId', function(req, res) {
 
 // ORDER   https://test-server-v2.vercel.app/api/orderprintful
 let arrBody = [];
-// let testRequest = [];
 app.post('/api/orderprintful', async function(req, res) {
-  // testRequest.push(req.body);
   for(let [index, item] of req.body.line_items.entries()) {
     if (item.properties[0]?.value != "") {
       try {
@@ -254,8 +252,8 @@ app.post('/api/orderprintful', async function(req, res) {
 });
 app.get('/api/orderprintful', function(req, res) {
   res.json(arrBody);
-  // res.json(testRequest);
 });
+
 
 // METAFIELDS
 app.post('/api/sendmetafield', function(req, res) {
