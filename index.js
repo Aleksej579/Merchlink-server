@@ -31,18 +31,6 @@ app.get("/", async (req, res) => {
   res.send('Server!');
 });
 
-// https://test-server-v2.vercel.app/test
-
-// let arr_ = [];
-// app.post("/test", (req, res) => {
-//   arr_.push(req.body);
-// });
-// app.get("/test", (req, res) => {
-//   res.json(arr_);
-// });
-
-
-
 // NONCES
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
@@ -172,9 +160,11 @@ app.get('/api/image/:prodId', function(req, res) {
 
 // ORDER   https://test-server-v2.vercel.app/api/orderprintful
 let arrBody = [];
+// let testRequest = [];
 app.post('/api/orderprintful', async function(req, res) {
+  // testRequest.push(req.body);
   for(let [index, item] of req.body.line_items.entries()) {
-    if (item.properties.length > 0) {   
+    if (item.properties[0]?.value != "") {
       try {
         const keyGt = item.properties[0].value;
         await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
@@ -184,13 +174,14 @@ app.post('/api/orderprintful', async function(req, res) {
           }
         }).then(response => {
           arrBody.push({
-            "quantity": `${req.body.line_items[index].quantity}`,
-            "variant_id": `${response.data.result.printfiles[0].variant_ids}`,
-            "files": [{
-              "placement": `${response.data.result.printfiles[0].placement}`,
-              // "url": `${response.data.result.printfiles[0].url}`
-              "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
-            }]
+            "variant_id": +`${response.data.result.printfiles[0].variant_ids}`.split(',')[0],
+            "quantity": +`${req.body.line_items[index].quantity}`,
+            "files": [
+              {
+                "placement": `${response.data.result.printfiles[0].placement}`,
+                "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
+              }
+            ]
           });
         })
       }
@@ -198,11 +189,41 @@ app.post('/api/orderprintful', async function(req, res) {
         console.log(err);
       }
     } else {
-      arrBody.push(item);
+      try {
+        await axios.get(`https://all-u-sportswear.myshopify.com/admin/products/${req.body.line_items[index].product_id}/metafields.json`, {
+          headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }
+        }).then( async (resp) => {
+          await axios.get(`https://api.printful.com/product-templates/@${resp.data.metafields[0].value}`, {
+            headers: { 
+              Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
+              'X-PF-Store-ID': process.env.STORE_ID 
+            }
+          }).then( async (resp) => {
+            arrBody.push(
+              {
+                "variant_id": +`${req.body.line_items[index].sku}`.split('_')[1],
+                "quantity": +`${req.body.line_items[index].quantity}`,
+                "product_template_id": +`${resp.data.result.id}`
+              }
+            );
+          })
+        });
+      }
+      catch (err) {
+        console.log(err);
+      }
     }
   }
 
-  if (arrBody.length > 0) {
+  let printful = [];
+  for(let item of arrBody) {
+    if (item.hasOwnProperty('files')) {
+      printful.push(true);
+    }else {
+      printful.push(false);
+    }
+  }
+  if (printful.includes(true)) {
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
@@ -219,15 +240,21 @@ app.post('/api/orderprintful', async function(req, res) {
       },
       "items": arrBody
     };
-    axios.post("https://api.printful.com/orders", body, { headers })
-      .then((response) => {
-        res.json(response.data);
-        arrBody.length = 0;
-      });
+    try{
+      await axios.post("https://api.printful.com/orders", body, { headers })
+        .then((response) => {
+          res.json(response.data);
+          arrBody.length = 0;
+        });
+    }
+    catch (err) {
+      console.log(err);
+    }
   }
 });
 app.get('/api/orderprintful', function(req, res) {
   res.json(arrBody);
+  // res.json(testRequest);
 });
 
 // METAFIELDS
