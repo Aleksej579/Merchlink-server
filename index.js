@@ -224,11 +224,11 @@ app.post('/api/orderprintful', async function(req, res) {
     }
   }
   if (printful.includes(true)) {
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-      'X-PF-Store-ID': process.env.STORE_ID
-    };
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+    //   'X-PF-Store-ID': process.env.STORE_ID
+    // };
     const body = {
       "recipient": {
         "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
