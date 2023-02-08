@@ -167,7 +167,7 @@ app.post('/api/orderprintful', async function(req, res) {
         const keyGt = item.properties[0].value;
         await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
           headers: {
-            Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
+            'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
             'X-PF-Store-ID': process.env.STORE_ID
           }
         }).then(response => {
@@ -193,7 +193,7 @@ app.post('/api/orderprintful', async function(req, res) {
         }).then( async (resp) => {
           await axios.get(`https://api.printful.com/product-templates/@${resp.data.metafields[0].value}`, {
             headers: { 
-              Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
+              'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
               'X-PF-Store-ID': process.env.STORE_ID 
             }
           }).then( async (resp) => {
