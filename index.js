@@ -188,26 +188,26 @@ app.post('/api/orderprintful', async function(req, res) {
       }
     } else {
       try {
-        await axios.get(`https://all-u-sportswear.myshopify.com/admin/products/${req.body.line_items[index].product_id}/metafields.json`, {
-          headers: { 
-            'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY 
-          }
-        }).then( async (resp) => {
-          await axios.get(`https://api.printful.com/product-templates/@${resp.data.metafields[0].value}`, {
-            headers: { 
-              'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-              'X-PF-Store-ID': process.env.STORE_ID 
-            }
-          }).then( async (resp) => {
-            arrBody.push(
-              {
-                "variant_id": +`${req.body.line_items[index].sku}`.split('_')[1],
-                "quantity": +`${req.body.line_items[index].quantity}`,
-                "product_template_id": +`${resp.data.result.id}`
-              }
-            );
-          })
-        });
+        // await axios.get(`https://all-u-sportswear.myshopify.com/admin/products/${req.body.line_items[index].product_id}/metafields.json`, {
+        //   headers: { 
+        //     'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY 
+        //   }
+        // }).then( async (resp) => {
+        //   await axios.get(`https://api.printful.com/product-templates/@${resp.data.metafields[0].value}`, {
+        //     headers: { 
+        //       'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+        //       'X-PF-Store-ID': process.env.STORE_ID 
+        //     }
+        //   }).then( async (resp) => {
+        //     arrBody.push(
+        //       {
+        //         "variant_id": +`${req.body.line_items[index].sku}`.split('_')[1],
+        //         "quantity": +`${req.body.line_items[index].quantity}`,
+        //         "product_template_id": +`${resp.data.result.id}`
+        //       }
+        //     );
+        //   })
+        // });
       }
       catch (err) {
         console.log(err);
