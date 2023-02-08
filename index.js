@@ -31,6 +31,29 @@ app.get("/", async (req, res) => {
   res.send('Server!');
 });
 
+
+
+// test get gt-data
+app.get('/test-get-gt/:gt', (req, res) => {
+  try {
+    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gt}`, {
+      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+    }).then(resp => {res.json(resp.data);});
+  }
+  catch (err) {console.log(err);}
+});
+// test get variantid
+app.get('/test-get-variantid/:variantid', (req, res) => {
+  try {
+    axios.get(`https://api.printful.com/products/variant/${req.params.variantid}`, {
+      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+    }).then(resp => {res.json(resp.data);});
+  }
+  catch (err) {console.log(err);}
+});
+
+
+
 // NONCES
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
@@ -66,6 +89,8 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
 });
 
 // app.use('/static', express.static(__dirname + '/customers'));
+
+
 
 // TASK_KEY + CLOUDINARY
 app.get("/api/template/:templateId/:customer", (req, res) => {
