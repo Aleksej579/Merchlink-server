@@ -162,7 +162,8 @@ app.get('/api/image/:prodId', function(req, res) {
 let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
   for(let [index, item] of req.body.line_items.entries()) {
-    if (item.properties[0]?.value != "") {
+    // if (item.properties[0]?.value != "") {
+    if (true) {
       try {
         const keyGt = item.properties[0].value;
         await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
