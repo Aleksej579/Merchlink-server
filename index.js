@@ -189,7 +189,9 @@ app.post('/api/orderprintful', async function(req, res) {
     } else {
       try {
         await axios.get(`https://all-u-sportswear.myshopify.com/admin/products/${req.body.line_items[index].product_id}/metafields.json`, {
-          headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }
+          headers: { 
+            'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY 
+          }
         }).then( async (resp) => {
           await axios.get(`https://api.printful.com/product-templates/@${resp.data.metafields[0].value}`, {
             headers: { 
