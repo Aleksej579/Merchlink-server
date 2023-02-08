@@ -33,6 +33,27 @@ app.get("/", async (req, res) => {
 
 
 
+
+
+// test get all templateі
+app.get('/test-get-alltemplates', (req, res) => {
+  try {
+    axios.get(`https://api.printful.com/product-templates`, {
+      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+    }).then(resp => {res.json(resp.data);});
+  }
+  catch (err) {console.log(err);}
+});
+// test get template
+app.get('/test-get-template/:template', (req, res) => {
+  try {
+    axios.get(`https://api.printful.com/product-templates/@${req.params.template}`, {
+      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+    }).then(resp => {res.json(resp.data);});
+  }
+  catch (err) {console.log(err);}
+});
+
 // test get gt-data
 app.get('/test-get-gt/:gt', (req, res) => {
   try {
