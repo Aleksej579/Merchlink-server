@@ -161,59 +161,59 @@ app.get('/api/image/:prodId', function(req, res) {
 // ORDER   https://test-server-v2.vercel.app/api/orderprintful
 let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
-  // for(let [index, item] of req.body.line_items.entries()) {
-  //   if (item.properties[0]?.value != "") {
-  //     try {
-  //       const keyGt = item.properties[0].value;
-  //       await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
-  //         headers: {
-  //           'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-  //           'X-PF-Store-ID': process.env.STORE_ID
-  //         }
-  //       }).then(response => {
-  //         arrBody.push({
-  //           "variant_id": +`${response.data.result.printfiles[0].variant_ids}`.split(',')[0],
-  //           "quantity": +`${req.body.line_items[index].quantity}`,
-  //           "files": [
-  //             {
-  //               "placement": `${response.data.result.printfiles[0].placement}`,
-  //               "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
-  //             }
-  //           ]
-  //         });
-  //       })
-  //     }
-  //     catch (err) {
-  //       console.log(err);
-  //     }
-  //   } else {
-  //     try {
-  //       await axios.get(`https://all-u-sportswear.myshopify.com/admin/products/${req.body.line_items[index].product_id}/metafields.json`, {
-  //         headers: { 
-  //           'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY 
-  //         }
-  //       }).then( async (resp) => {
-  //         await axios.get(`https://api.printful.com/product-templates/@${resp.data.metafields[0].value}`, {
-  //           headers: { 
-  //             'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-  //             'X-PF-Store-ID': process.env.STORE_ID 
-  //           }
-  //         }).then( async (resp) => {
-  //           arrBody.push(
-  //             {
-  //               "variant_id": +`${req.body.line_items[index].sku}`.split('_')[1],
-  //               "quantity": +`${req.body.line_items[index].quantity}`,
-  //               "product_template_id": +`${resp.data.result.id}`
-  //             }
-  //           );
-  //         })
-  //       });
-  //     }
-  //     catch (err) {
-  //       console.log(err);
-  //     }
-  //   }
-  // }
+  for(let [index, item] of req.body.line_items.entries()) {
+    if (item.properties[0]?.value != "") {
+      try {
+        const keyGt = item.properties[0].value;
+        await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
+          headers: {
+            'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+            'X-PF-Store-ID': process.env.STORE_ID
+          }
+        }).then(response => {
+          arrBody.push({
+            "variant_id": +`${response.data.result.printfiles[0].variant_ids}`.split(',')[0],
+            "quantity": +`${req.body.line_items[index].quantity}`,
+            "files": [
+              {
+                "placement": `${response.data.result.printfiles[0].placement}`,
+                "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
+              }
+            ]
+          });
+        })
+      }
+      catch (err) {
+        console.log(err);
+      }
+    } else {
+      try {
+        await axios.get(`https://all-u-sportswear.myshopify.com/admin/products/${req.body.line_items[index].product_id}/metafields.json`, {
+          headers: { 
+            'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY 
+          }
+        }).then( async (resp) => {
+          await axios.get(`https://api.printful.com/product-templates/@${resp.data.metafields[0].value}`, {
+            headers: { 
+              'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+              'X-PF-Store-ID': process.env.STORE_ID 
+            }
+          }).then( async (resp) => {
+            arrBody.push(
+              {
+                "variant_id": +`${req.body.line_items[index].sku}`.split('_')[1],
+                "quantity": +`${req.body.line_items[index].quantity}`,
+                "product_template_id": +`${resp.data.result.id}`
+              }
+            );
+          })
+        });
+      }
+      catch (err) {
+        console.log(err);
+      }
+    }
+  }
 
   // let printful = [];
   // for(let item of arrBody) {
