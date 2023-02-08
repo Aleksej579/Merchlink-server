@@ -164,24 +164,24 @@ app.post('/api/orderprintful', async function(req, res) {
   for(let [index, item] of req.body.line_items.entries()) {
     if (item.properties[0]?.value != "") {
       try {
-        const keyGt = item.properties[0].value;
-        await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
-          headers: {
-            'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-            'X-PF-Store-ID': process.env.STORE_ID
-          }
-        }).then(response => {
-          arrBody.push({
-            "variant_id": +`${response.data.result.printfiles[0].variant_ids}`.split(',')[0],
-            "quantity": +`${req.body.line_items[index].quantity}`,
-            "files": [
-              {
-                "placement": `${response.data.result.printfiles[0].placement}`,
-                "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
-              }
-            ]
-          });
-        })
+        // const keyGt = item.properties[0].value;
+        // await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
+        //   headers: {
+        //     'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+        //     'X-PF-Store-ID': process.env.STORE_ID
+        //   }
+        // }).then(response => {
+        //   arrBody.push({
+        //     "variant_id": +`${response.data.result.printfiles[0].variant_ids}`.split(',')[0],
+        //     "quantity": +`${req.body.line_items[index].quantity}`,
+        //     "files": [
+        //       {
+        //         "placement": `${response.data.result.printfiles[0].placement}`,
+        //         "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
+        //       }
+        //     ]
+        //   });
+        // })
       }
       catch (err) {
         console.log(err);
@@ -256,8 +256,6 @@ app.post('/api/orderprintful', async function(req, res) {
 app.get('/api/orderprintful', function(req, res) {
   res.json(arrBody);
 });
-
-
 
 // METAFIELDS
 app.post('/api/sendmetafield', function(req, res) {
