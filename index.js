@@ -33,8 +33,6 @@ app.get("/", async (req, res) => {
 
 
 
-
-
 // test get all templateі
 app.get('/test-get-alltemplates', (req, res) => {
   try {
@@ -53,7 +51,6 @@ app.get('/test-get-template/:template', (req, res) => {
   }
   catch (err) {console.log(err);}
 });
-
 // test get gt-data
 app.get('/test-get-gt/:gt', (req, res) => {
   try {
@@ -207,13 +204,14 @@ app.get('/api/image/:prodId', function(req, res) {
 
 // ORDER   https://test-server-v2.vercel.app/api/orderprintful
 
-let arrBody = [];
 app.post('/api/orderprintful', async function(req, res) {
+  let arrBody = [];
   for(let [index, item] of req.body.line_items.entries()) {
     // if (item.properties[0]?.value != "") {
-    if (item.properties[0].value != "") {
+    if (item.properties[0].name == 'customize_detail_order' && item.properties[0].value != "") {
       try {
         const keyGt = item.properties[0].value;
+              //  url: 'https://api.printful.com/mockup-generator/task?task_key=collection:b2918964-75f5-4625-b36e-2718034a3434',
         await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {
           headers: {
             'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
@@ -221,6 +219,7 @@ app.post('/api/orderprintful', async function(req, res) {
           }
         }).then(response => {
           arrBody.push({
+            "to_printful": true,
             "variant_id": +`${response.data.result.printfiles[0].variant_ids}`.split(',')[0],
             "quantity": +`${req.body.line_items[index].quantity}`,
             "files": [
@@ -266,7 +265,7 @@ app.post('/api/orderprintful', async function(req, res) {
 
   let printful = [];
   for(let item of arrBody) {
-    if (item.hasOwnProperty('files')) {
+    if (item.hasOwnProperty('to_printful')) {
       printful.push(true);
     }else {
       printful.push(false);
@@ -291,15 +290,21 @@ app.post('/api/orderprintful', async function(req, res) {
     };
     try{
       await axios.post("https://api.printful.com/orders", body, { headers })
-        .then((response) => {
-          res.json(response.data);
+        .then(async (res) => {
           arrBody.length = 0;
+          printful.length = 0;
+          // await axios.delete(`https://all-u-sportswear.myshopify.com/admin/api/2022-10/orders/${req.body.id}.json`, {headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
+          await axios.delete(`https://api.printful.com/orders/@${req.body.order_number}`, {headers: { 
+            'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
+            'X-PF-Store-ID': process.env.STORE_ID 
+          }})
         });
     }
     catch (err) {
       console.log(err);
     }
   }
+  // arrBody.length = 0;
 });
 
 app.get('/api/orderprintful', function(req, res) {
