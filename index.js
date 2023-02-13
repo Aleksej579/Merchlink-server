@@ -294,7 +294,7 @@ app.post('/api/orderprintful', async function(req, res) {
         .then(async () => {
           arrBody.length = 0;
           printful.length = 0;
-          // await axios.delete(`https://all-u-sportswear.myshopify.com/admin/api/2022-10/orders/${req.body.id}.json`, {headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
+          await axios.delete(`https://all-u-sportswear.myshopify.com/admin/api/2022-10/orders/${req.body.id}.json`, {headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
           await axios.delete(`https://api.printful.com/orders/@${req.body.order_number}`, {headers: { 
             'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
             'X-PF-Store-ID': process.env.STORE_ID 
@@ -305,7 +305,7 @@ app.post('/api/orderprintful', async function(req, res) {
       console.log(err);
     }
   }
-  
+
   arrBody.length = 0;
   printful.length = 0;
 
