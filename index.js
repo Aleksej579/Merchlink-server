@@ -131,8 +131,10 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
           }
         )
         }).then((resMockup) => {
-          res.json(resMockup.data.result.task_key);
-          setTimeout(() => {
+
+          // res.json(resMockup.data.result.task_key);
+          
+          // setTimeout(() => {
             let gt = resMockup.data.result.task_key;
             let customer = req.params.customer;
             // fs.mkdirSync(`./customers/${customer}/${gt}`, { recursive: true });
@@ -148,8 +150,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
               let arrLinkToImagePrintfiles = resp.data.result.printfiles;
 
               await arrLinkToImage.forEach((element, index) => {
-                // fetch(element.mockup_url).then(res => {
-
+                fetch(element.mockup_url).then((res) => {
                   // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
                   cloudinary.uploader
                     .upload(element.mockup_url, {
@@ -157,11 +158,10 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                       public_id: `customers/${customer}/${gt}/image-${index}`,
                       overwrite: true
                     });
-                // });
+                });
               });
               await arrLinkToImagePrintfiles.forEach((element, index) => {
-                // fetch(element.url).then(res => {
-
+                fetch(element.url).then((res) => {
                   // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
                   cloudinary.uploader
                     .upload(element.url, {
@@ -169,10 +169,10 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                       public_id: `customers/${customer}/${gt}/image__printfiles-${index}`,
                       overwrite: true
                     });
-                // });
+                });
               });
             });
-          }, 5000);
+          // }, 5000);
         })
     }
     catch (err) {
