@@ -132,8 +132,8 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
         )
         }).then((resMockup) => {
 
-          // res.json(resMockup.data.result.task_key);
-          
+          res.json(resMockup.data.result.task_key);
+
           // setTimeout(() => {
             let gt = resMockup.data.result.task_key;
             let customer = req.params.customer;
