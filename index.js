@@ -85,7 +85,7 @@ app.get("/api/nonces/:userId", async (req, res) => {
     res.json(response.data);
   }
   catch (err) {
-      console.log(err)
+    console.log(err)
   }
 });
 
@@ -148,7 +148,8 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
               let arrLinkToImagePrintfiles = resp.data.result.printfiles;
 
               await arrLinkToImage.forEach((element, index) => {
-                fetch(element.mockup_url).then(res => {
+                // fetch(element.mockup_url).then(res => {
+
                   // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
                   cloudinary.uploader
                     .upload(element.mockup_url, {
@@ -156,10 +157,11 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                       public_id: `customers/${customer}/${gt}/image-${index}`,
                       overwrite: true
                     });
-                });
+                // });
               });
               await arrLinkToImagePrintfiles.forEach((element, index) => {
-                fetch(element.url).then(res => {
+                // fetch(element.url).then(res => {
+
                   // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
                   cloudinary.uploader
                     .upload(element.url, {
@@ -167,7 +169,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                       public_id: `customers/${customer}/${gt}/image__printfiles-${index}`,
                       overwrite: true
                     });
-                });
+                // });
               });
             });
           }, 5000);
