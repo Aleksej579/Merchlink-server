@@ -114,11 +114,8 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
     try {
-      
       axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, 
-        {
-          headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}
-        }
+        { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`} }
       ).then( (resTemplates) => {
         return axios.post(`https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
           {
@@ -135,7 +132,6 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
         )
         }).then((resMockup) => {
           res.json(resMockup.data.result.task_key);
-
           setTimeout(() => {
             let gt = resMockup.data.result.task_key;
             let customer = req.params.customer;
@@ -162,8 +158,6 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                     });
                 });
               });
-
-
               await arrLinkToImagePrintfiles.forEach((element, index) => {
                 fetch(element.url).then(res => {
                   // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
@@ -175,8 +169,6 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                     });
                 });
               });
-
-
             });
           }, 5000);
         })
@@ -200,6 +192,16 @@ app.get('/api/image/:prodId', function(req, res) {
       console.log(err)
   }
 });
+
+// TEST save to cloudinary
+// app.get('/cloudinary', function(req, res) {
+//   cloudinary.uploader
+//     .upload(`https://printful-upload.s3-accelerate.amazonaws.com/tmp/1c52be0548e09956bdb84903388e4a39/snapback-trucker-cap-black-front-63edf9169d2b4.jpg`, {
+//       resource_type: "image",
+//       public_id: `test`,
+//       overwrite: true
+//     });
+// });
 
 
 // ORDER   https://test-server-v2.vercel.app/api/orderprintful
