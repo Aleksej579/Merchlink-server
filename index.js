@@ -106,74 +106,56 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
   }
 });
 
-// app.use('/static', express.static(__dirname + '/customers'));
-
-
-
 // TASK_KEY + CLOUDINARY
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
     try {
-      axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, 
-        { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`} }
-      ).then( (resTemplates) => {
-        return axios.post(`https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
-          {
-            "variant_ids": resTemplates.data.result.available_variant_ids,
-            "format": "jpg",
-            "product_template_id": resTemplates.data.result.id
-          },
-          {
-            headers: {
-              'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`,
-              'X-PF-Store-ID': process.env.STORE_ID
-            }
-          }
+      axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`} })
+      .then((resTemplates) => {
+        return axios.post(
+          `https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
+          { "variant_ids": resTemplates.data.result.available_variant_ids, "format": "jpg", "product_template_id": resTemplates.data.result.id },
+          { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID } }
         )
-        }).then((resMockup) => {
+        .then((respGt) => {
+          res.json(respGt.data.result.task_key);
 
-          res.json(resMockup.data.result.task_key);
-
-          // setTimeout(() => {
-            let gt = resMockup.data.result.task_key;
-            let customer = req.params.customer;
-            // fs.mkdirSync(`./customers/${customer}/${gt}`, { recursive: true });
-            axios.get(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, 
-              {
-                headers: {
-                  Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
-                  'X-PF-Store-ID': process.env.STORE_ID
-                }
-              }
-            ).then(async (resp) => {
-              let arrLinkToImage = resp.data.result.mockups;
-              let arrLinkToImagePrintfiles = resp.data.result.printfiles;
-
+          setTimeout(() => {
+            // let gt = 'gt-475890414';
+            let gt = respGt.data.result.task_key;
+            axios.get(
+              `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
+              {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
+            )
+            .then(async(respImg) => {
+              console.log(respImg.data)
+              let arrLinkToImage = respImg.data.result.mockups;
+              let arrLinkToImagePrintfiles = respImg.data.result.printfiles;
               await arrLinkToImage.forEach((element, index) => {
                 fetch(element.mockup_url).then((res) => {
-                  // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
                   cloudinary.uploader
                     .upload(element.mockup_url, {
                       resource_type: "image",
-                      public_id: `customers/${customer}/${gt}/image-${index}`,
+                      public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
                       overwrite: true
                     });
                 });
               });
               await arrLinkToImagePrintfiles.forEach((element, index) => {
                 fetch(element.url).then((res) => {
-                  // res.body.pipe(fs.createWriteStream(`./customers/${customer}/${gt}/image-${index}.png`));
                   cloudinary.uploader
                     .upload(element.url, {
                       resource_type: "image",
-                      public_id: `customers/${customer}/${gt}/image__printfiles-${index}`,
+                      public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
                       overwrite: true
                     });
                 });
               });
             });
-          // }, 5000);
+          }, 10000);
         })
+      })
+      
     }
     catch (err) {
         console.log(err)
