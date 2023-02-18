@@ -164,23 +164,25 @@ app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res)
           `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
           {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
         )
-        .then(async(respImg) => {
-          let arrLinkToImage = await respImg.data.result.mockups;
-          let arrLinkToImagePrintfiles = await respImg.data.result.printfiles;
-          await arrLinkToImage.forEach((element, index) => {
-            cloudinary.uploader.upload(element.mockup_url, {
-              resource_type: "image",
-              public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
-              overwrite: true
+        .then((respImg) => {
+          setTimeout(async() => {
+            let arrLinkToImage = await respImg.data.result.mockups;
+            let arrLinkToImagePrintfiles = await respImg.data.result.printfiles;
+            await arrLinkToImage.forEach((element, index) => {
+              cloudinary.uploader.upload(element.mockup_url, {
+                resource_type: "image",
+                public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
+                overwrite: true
+              });
             });
-          });
-          await arrLinkToImagePrintfiles.forEach((element, index) => {
-            cloudinary.uploader.upload(element.url, {
-              resource_type: "image",
-              public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
-              overwrite: true
+            await arrLinkToImagePrintfiles.forEach((element, index) => {
+              cloudinary.uploader.upload(element.url, {
+                resource_type: "image",
+                public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
+                overwrite: true
+              });
             });
-          });
+          }, 50000);
         })
         .then(() => {
           res.json(gt);
