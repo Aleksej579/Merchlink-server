@@ -165,8 +165,8 @@ app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res)
           {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
         )
         .then(async(respImg) => {
-          let arrLinkToImage = respImg.data.result.mockups;
-          let arrLinkToImagePrintfiles = respImg.data.result.printfiles;
+          let arrLinkToImage = await respImg.data.result.mockups;
+          let arrLinkToImagePrintfiles = await respImg.data.result.printfiles;
           await arrLinkToImage.forEach((element, index) => {
             cloudinary.uploader.upload(element.mockup_url, {
               resource_type: "image",
