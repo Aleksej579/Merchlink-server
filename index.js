@@ -120,13 +120,13 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
         .then((respGt) => {
           res.json(respGt.data.result.task_key);
 
-          cloudinary.uploader.upload('https://via.placeholder.com/150', {
-              resource_type: "image",
-              public_id: `test`,
-              overwrite: true
-          });
+          // cloudinary.uploader.upload('https://via.placeholder.com/150', {
+          //     resource_type: "image",
+          //     public_id: `test`,
+          //     overwrite: true
+          // });
 
-          setTimeout(() => {
+          // setTimeout(() => {
             let gt = respGt.data.result.task_key;
             axios.get(
               `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
@@ -136,27 +136,25 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
               let arrLinkToImage = respImg.data.result.mockups;
               let arrLinkToImagePrintfiles = respImg.data.result.printfiles;
               await arrLinkToImage.forEach((element, index) => {
-                fetch(element.mockup_url).then(() => {
-                  cloudinary.uploader
-                    .upload(element.mockup_url, {
+                // fetch(element.mockup_url).then(() => {
+                  cloudinary.uploader.upload(element.mockup_url, {
                       resource_type: "image",
                       public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
                       overwrite: true
                     });
-                });
+                // });
               });
               await arrLinkToImagePrintfiles.forEach((element, index) => {
-                fetch(element.url).then(() => {
-                  cloudinary.uploader
-                    .upload(element.url, {
+                // fetch(element.url).then(() => {
+                  cloudinary.uploader.upload(element.url, {
                       resource_type: "image",
                       public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
                       overwrite: true
                     });
-                });
+                // });
               });
             });
-          }, 10000);
+          // }, 10000);
         })
       })
       
