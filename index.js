@@ -119,20 +119,17 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
         )
         .then((respGt) => {
           res.json(respGt.data.result.task_key);
-
           setTimeout(() => {
-            // let gt = 'gt-475890414';
             let gt = respGt.data.result.task_key;
             axios.get(
               `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
               {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
             )
             .then(async(respImg) => {
-              console.log(respImg.data)
               let arrLinkToImage = respImg.data.result.mockups;
               let arrLinkToImagePrintfiles = respImg.data.result.printfiles;
               await arrLinkToImage.forEach((element, index) => {
-                fetch(element.mockup_url).then((res) => {
+                fetch(element.mockup_url).then(() => {
                   cloudinary.uploader
                     .upload(element.mockup_url, {
                       resource_type: "image",
@@ -142,7 +139,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                 });
               });
               await arrLinkToImagePrintfiles.forEach((element, index) => {
-                fetch(element.url).then((res) => {
+                fetch(element.url).then(() => {
                   cloudinary.uploader
                     .upload(element.url, {
                       resource_type: "image",
