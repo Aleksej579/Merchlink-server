@@ -126,7 +126,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
           //     overwrite: true
           // });
 
-          // setTimeout(() => {
+          setTimeout(() => {
             let gt = respGt.data.result.task_key;
             axios.get(
               `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
@@ -154,7 +154,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                 // });
               });
             });
-          // }, 10000);
+          }, 10000);
         })
       })
       
