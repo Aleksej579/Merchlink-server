@@ -119,6 +119,13 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
         )
         .then((respGt) => {
           res.json(respGt.data.result.task_key);
+
+          cloudinary.uploader.upload('https://via.placeholder.com/150', {
+              resource_type: "image",
+              public_id: `test`,
+              overwrite: true
+          });
+
           setTimeout(() => {
             let gt = respGt.data.result.task_key;
             axios.get(
