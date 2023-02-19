@@ -105,45 +105,6 @@ app.get('/api/gtkey/:gtkey', function (req, res) {
   }
 });
 
-// METAFIELDS public page
-app.post('/api/publiccollection', function(req, res) {
-  if (req.body.userid && req.body.metaf) {
-    try {
-      const headers = {
-        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
-        'Content-Type': 'application/json'
-      };
-      const body = {
-        "metafield": {
-          "namespace": `${req.body.userid}`,
-          "key": `${req.body.userid}`,
-          "value": `${req.body.metaf}`,
-          "type": "single_line_text_field"
-        }
-      };
-      axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
-        .then(() => {
-          const headers = {
-            'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
-            'Content-Type': 'application/json'
-          };
-          const body = {
-            "metafield": {
-              "namespace": `${req.body.userid}-image_coll`,
-              "key": `${req.body.userid}-image_coll`,
-              "value": `${req.body.imageLogoCatalogSrc}`,
-              "type": "single_line_text_field"
-            }
-          };
-          axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
-        });
-    }
-    catch (err) {
-      console.log(err);
-    }
-  }
-});
-
 // TASK_KEY + CLOUDINARY
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
@@ -451,43 +412,43 @@ app.post('/api/namecoll', function(req, res) {
 });
 
 // METAFIELDS public page
-// app.post('/api/publiccollection', function(req, res) {
-//   if (req.body.userid && req.body.metaf) {
-//     try {
-//       const headers = {
-//         'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
-//         'Content-Type': 'application/json'
-//       };
-//       const body = {
-//         "metafield": {
-//           "namespace": `${req.body.userid}`,
-//           "key": `${req.body.userid}`,
-//           "value": `${req.body.metaf}`,
-//           "type": "single_line_text_field"
-//         }
-//       };
-//       axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
-//         .then(() => {
-//           const headers = {
-//             'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
-//             'Content-Type': 'application/json'
-//           };
-//           const body = {
-//             "metafield": {
-//               "namespace": `${req.body.userid}-image_coll`,
-//               "key": `${req.body.userid}-image_coll`,
-//               "value": `${req.body.imageLogoCatalogSrc}`,
-//               "type": "single_line_text_field"
-//             }
-//           };
-//           axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
-//         });
-//     }
-//     catch (err) {
-//       console.log(err);
-//     }
-//   }
-// });
+app.post('/api/publiccollection', function(req, res) {
+  if (req.body.userid && req.body.metaf) {
+    try {
+      const headers = {
+        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
+        'Content-Type': 'application/json'
+      };
+      const body = {
+        "metafield": {
+          "namespace": `${req.body.userid}`,
+          "key": `${req.body.userid}`,
+          "value": `${req.body.metaf}`,
+          "type": "single_line_text_field"
+        }
+      };
+      axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
+        .then(() => {
+          const headers = {
+            'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
+            'Content-Type': 'application/json'
+          };
+          const body = {
+            "metafield": {
+              "namespace": `${req.body.userid}-image_coll`,
+              "key": `${req.body.userid}-image_coll`,
+              "value": `${req.body.imageLogoCatalogSrc}`,
+              "type": "single_line_text_field"
+            }
+          };
+          axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
+        });
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+});
 
 let arrImageColl = []
 app.post('/api/logocollection/:userId', function(req, res) {
