@@ -414,6 +414,7 @@ app.post('/api/namecoll', function(req, res) {
 // METAFIELDS public page
 app.post('/api/publiccollection', function(req, res) {
   try {
+    res.send("test")
     // const headers = {
     //   'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
     //   'Content-Type': 'application/json'
