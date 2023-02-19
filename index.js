@@ -161,7 +161,7 @@ app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res)
         .then(() => {
           res.json(gt);
         });
-      }, 50000);
+      }, 10000);
     }
     catch (err) {
         console.log(err)
