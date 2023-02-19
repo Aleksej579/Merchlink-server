@@ -131,6 +131,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
 // SEND-IMAGE-CLOUDINARY
 app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res) => {
   if (req.params.templateId && req.params.customer && req.params.gtnumber) {
+    console.log("start")
     try {
       setTimeout(async() => {
         let gt = req.params.gtnumber;
@@ -140,6 +141,7 @@ app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res)
         )
         .then(async(respImg) => {
           // setTimeout(async() => {
+            console.log("start send to cloudinary")
             let arrLinkToImage = await respImg.data.result.mockups;
             let arrLinkToImagePrintfiles = await respImg.data.result.printfiles;
             await arrLinkToImage.forEach((element, index) => {
@@ -159,6 +161,7 @@ app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res)
           // }, 50000);
         })
         .then(() => {
+          console.log("end")
           res.json(gt);
         });
       }, 10000);
@@ -182,17 +185,6 @@ app.get('/api/image/:prodId', function(req, res) {
       console.log(err)
   }
 });
-
-// TEST save to cloudinary
-// app.get('/cloudinary', function(req, res) {
-//   cloudinary.uploader
-//     .upload(`https://printful-upload.s3-accelerate.amazonaws.com/tmp/1c52be0548e09956bdb84903388e4a39/snapback-trucker-cap-black-front-63edf9169d2b4.jpg`, {
-//       resource_type: "image",
-//       public_id: `test`,
-//       overwrite: true
-//     });
-// });
-
 
 // ORDER   https://test-server-v2.vercel.app/api/orderprintful
 app.post('/api/orderprintful', async function(req, res) {
