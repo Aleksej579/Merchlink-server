@@ -32,6 +32,45 @@ app.get("/", async (req, res) => {
 });
 
 
+// test get all templateі
+app.get('/test-get-alltemplates', (req, res) => {
+  try {
+    axios.get(`https://api.printful.com/product-templates`, {
+      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+    }).then(resp => {res.json(resp.data);});
+  }
+  catch (err) {console.log(err);}
+});
+// test get template
+app.get('/test-get-template/:template', (req, res) => {
+  try {
+    axios.get(`https://api.printful.com/product-templates/@${req.params.template}`, {
+      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+    }).then(resp => {res.json(resp.data);});
+  }
+  catch (err) {console.log(err);}
+});
+// test get gt-data
+app.get('/test-get-gt/:gt', (req, res) => {
+  try {
+    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gt}`, {
+      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+    }).then(resp => {res.json(resp.data);});
+  }
+  catch (err) {console.log(err);}
+});
+// test get variantid
+app.get('/test-get-variantid/:variantid', (req, res) => {
+  try {
+    axios.get(`https://api.printful.com/products/variant/${req.params.variantid}`, {
+      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+    }).then(resp => {res.json(resp.data);});
+  }
+  catch (err) {console.log(err);}
+});
+
+
+
 // NONCES
 app.get("/api/nonces/:userId", async (req, res) => {
   try {
@@ -441,47 +480,6 @@ app.post('/api/logocollection/:userId', function(req, res) {
 app.get('/api/logocollection', function(req, res) {
   res.json(arrImageColl);
 });
-
-
-
-// test get all templateі
-app.get('/test-get-alltemplates', (req, res) => {
-  try {
-    axios.get(`https://api.printful.com/product-templates`, {
-      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
-    }).then(resp => {res.json(resp.data);});
-  }
-  catch (err) {console.log(err);}
-});
-// test get template
-app.get('/test-get-template/:template', (req, res) => {
-  try {
-    axios.get(`https://api.printful.com/product-templates/@${req.params.template}`, {
-      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
-    }).then(resp => {res.json(resp.data);});
-  }
-  catch (err) {console.log(err);}
-});
-// test get gt-data
-app.get('/test-get-gt/:gt', (req, res) => {
-  try {
-    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gt}`, {
-      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
-    }).then(resp => {res.json(resp.data);});
-  }
-  catch (err) {console.log(err);}
-});
-// test get variantid
-app.get('/test-get-variantid/:variantid', (req, res) => {
-  try {
-    axios.get(`https://api.printful.com/products/variant/${req.params.variantid}`, {
-      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
-    }).then(resp => {res.json(resp.data);});
-  }
-  catch (err) {console.log(err);}
-});
-
-
 
 
 app.get('*', (req, res) => {
