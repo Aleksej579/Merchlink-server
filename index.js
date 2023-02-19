@@ -138,7 +138,7 @@ app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res)
           `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
           {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
         )
-        .then((respImg) => {
+        .then(async(respImg) => {
           // setTimeout(async() => {
             let arrLinkToImage = await respImg.data.result.mockups;
             let arrLinkToImagePrintfiles = await respImg.data.result.printfiles;
