@@ -119,35 +119,8 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
         )
         .then((respGt) => {
           res.json(respGt.data.result.task_key);
-
-          // setTimeout(() => {
-          //   let gt = respGt.data.result.task_key;
-          //   axios.get(
-          //     `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
-          //     {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
-          //   )
-          //   .then(async(respImg) => {
-          //     let arrLinkToImage = respImg.data.result.mockups;
-          //     let arrLinkToImagePrintfiles = respImg.data.result.printfiles;
-          //     await arrLinkToImage.forEach((element, index) => {
-          //       cloudinary.uploader.upload(element.mockup_url, {
-          //           resource_type: "image",
-          //           public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
-          //           overwrite: true
-          //         });
-          //     });
-          //     await arrLinkToImagePrintfiles.forEach((element, index) => {
-          //       cloudinary.uploader.upload(element.url, {
-          //           resource_type: "image",
-          //           public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
-          //           overwrite: true
-          //         });
-          //     });
-          //   });
-          // }, 10000);
         })
       })
-      
     }
     catch (err) {
         console.log(err)
@@ -159,13 +132,14 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
 app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res) => {
   if (req.params.templateId && req.params.customer && req.params.gtnumber) {
     try {
+      setTimeout(async() => {
         let gt = req.params.gtnumber;
         axios.get(
           `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
           {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
         )
         .then((respImg) => {
-          setTimeout(async() => {
+          // setTimeout(async() => {
             let arrLinkToImage = await respImg.data.result.mockups;
             let arrLinkToImagePrintfiles = await respImg.data.result.printfiles;
             await arrLinkToImage.forEach((element, index) => {
@@ -182,11 +156,12 @@ app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res)
                 overwrite: true
               });
             });
-          }, 50000);
+          // }, 50000);
         })
         .then(() => {
           res.json(gt);
         });
+      }, 50000);
     }
     catch (err) {
         console.log(err)
