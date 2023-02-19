@@ -70,42 +70,69 @@ app.get('/test-get-variantid/:variantid', (req, res) => {
 });
 
 
-
-// NONCES
-app.get("/api/nonces/:userId", async (req, res) => {
-  try {
-    const token = process.env.TOKEN_PRINTFUL;
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    };
-    const body = {"external_product_id": `${req.params.userId}`};
-    const response = await axios.post("https://api.printful.com/embedded-designer/nonces", body, { headers });
-    res.json(response.data);
-  }
-  catch (err) {
-    console.log(err)
-  }
-});
-
 // GT-IMAGE + save image
 app.get('/api/gtkey/:gtkey', function (req, res) {
   try {
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gtkey}`, {
-      headers: {
-        Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`,
-        'X-PF-Store-ID': process.env.STORE_ID
-      }
-    }).then(resp => {
+      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+    }).then((resp) => {
       res.json(resp.data);
     });
-  }
-  catch (err) {
-      console.log(err);
-  }
+  } catch (err) {console.log(err);}
 });
 
-// TASK_KEY + CLOUDINARY
+// NONCES
+app.get("/api/nonces/:userId", (req, res) => {
+  try {
+    axios.post("https://api.printful.com/embedded-designer/nonces", 
+      {"external_product_id": `${req.params.userId}`}, 
+      {headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}` }}
+    )
+    .then((response) => {
+      res.json(response.data);
+    })
+  } catch (err) {console.log(err)}
+});
+
+// SAVE-IMAGE-CLOUDINARY  https://4b98-109-86-251-13.eu.ngrok.io/api/makeimagetocloudinary/6341351670004/gt-476757613
+app.get("/api/makeimagetocloudinary/:customer/:gtnumber", (req, res) => {
+  try {
+    let gt = req.params.gtnumber;
+    axios.get(
+      `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
+      {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
+    )
+    .then((respImg) => {
+      if (respImg.data.result.status == 'completed' ) {
+        console.log(`completed ${gt}`)
+        let arrLinkToImage = respImg.data.result.mockups;
+        arrLinkToImage.forEach((element, index) => {
+          cloudinary.uploader.upload(element.mockup_url, {
+            resource_type: "image",
+            public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
+            overwrite: true
+          });
+        });
+        let arrLinkToImagePrintfiles = respImg.data.result.printfiles;
+        arrLinkToImagePrintfiles.forEach((element, index) => {
+          cloudinary.uploader.upload(element.url, {
+            resource_type: "image",
+            public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
+            overwrite: true
+          });
+        });
+      } else if (respImg.data.result.status == 'pending') {
+        console.log(`pending ${gt}`)
+        axios.get(`https://test-server-v2.vercel.app/api/makeimagetocloudinary/${req.params.customer}/${gt}`,)
+      }
+    })
+    .then(() => {
+      res.json(gt);
+    });
+  } catch (err) {console.log(err)}
+});
+
+// TASK_KEY
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
     try {
@@ -120,66 +147,16 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
           res.json(respGt.data.result.task_key);
         })
       })
-    }
-    catch (err) {
-        console.log(err)
-    }
-  }
-});
-
-// SEND-IMAGE-CLOUDINARY
-app.get("/api/makeimagetocloudinary/:templateId/:customer/:gtnumber", (req, res) => {
-  if (req.params.templateId && req.params.customer && req.params.gtnumber) {
-    try {
-      setTimeout(async() => {
-        let gt = req.params.gtnumber;
-        axios.get(
-          `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
-          {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
-        )
-        .then(async(respImg) => {
-          // setTimeout(async() => {
-            let arrLinkToImage = await respImg.data.result.mockups;
-            let arrLinkToImagePrintfiles = await respImg.data.result.printfiles;
-            await arrLinkToImage.forEach((element, index) => {
-              cloudinary.uploader.upload(element.mockup_url, {
-                resource_type: "image",
-                public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
-                overwrite: true
-              });
-            });
-            await arrLinkToImagePrintfiles.forEach((element, index) => {
-              cloudinary.uploader.upload(element.url, {
-                resource_type: "image",
-                public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
-                overwrite: true
-              });
-            });
-          // }, 50000);
-        })
-        .then(() => {
-          res.json(gt);
-        });
-      }, 10000);
-    }
-    catch (err) {
-        console.log(err)
-    }
+    } catch (err) {console.log(err) }
   }
 });
 
 // IMAGE not from gt
-app.get('/api/image/:prodId', function(req, res) {
+app.get('/api/image/:prodId', (req, res) => {
   try {
-    axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {
-      headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}
-    }).then(resp => {
-      res.json(resp.data);
-    });
-  }
-  catch (err) {
-      console.log(err)
-  }
+    axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}})
+    .then((resp) => { res.json(resp.data) });
+  } catch (err) { console.log(err) }
 });
 
 // ORDER   https://test-server-v2.vercel.app/api/orderprintful
