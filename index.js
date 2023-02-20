@@ -388,7 +388,7 @@ app.post('/api/namecoll', function(req, res) {
   }
 });
 
-// METAFIELDS public page
+// METAFIELDS for public page
 app.post('/api/publiccollection', function(req, res) {
   try {
     const headers = {
