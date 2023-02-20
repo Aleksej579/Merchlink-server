@@ -418,11 +418,11 @@ app.post('/api/publiccollection', function(req, res) {
           }
         };
         axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
+        .then((response) => {
+          res.json(response.data);
+        });
       });
-  }
-  catch (err) {
-    console.log(err);
-  }
+  } catch (err) {console.log(err)}
 });
 
 let arrImageColl = []
