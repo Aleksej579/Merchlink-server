@@ -129,8 +129,6 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber", (req, res) => {
             resjson = await res.json();
             if (resjson.result.status == 'completed' ) {
               console.log('completed - ok')
-              // axios.get(`https://test-server-v2.vercel.app/api/makeimagetocloudinary/${req.params.customer}/${gt}`);
-
               let arrLinkToImage = resjson.result.mockups;
               arrLinkToImage.forEach((element, index) => {
                 cloudinary.uploader.upload(element.mockup_url, {
@@ -376,14 +374,16 @@ app.post('/api/changemetafield', function(req, res) {
       };
       axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
 
-      cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${product_template_gt}`, function(result){})
-        .then(() => {
-          cloudinary.api
+      if (customerId && product_template_gt) {
+        cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${product_template_gt}`)
+          .then(() => {
+            cloudinary.api
             .delete_folder(`customers/${customerId}/${product_template_gt}`)
             .then((result) => {
               res.json(result);
             });
-        })
+          })
+      }
     })
   }
   catch (err) {
