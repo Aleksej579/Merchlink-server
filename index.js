@@ -72,13 +72,15 @@ app.get('/test-get-variantid/:variantid', (req, res) => {
 
 // GT-IMAGE + save image
 app.get('/api/gtkey/:gtkey', function (req, res) {
-  try {
-    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gtkey}`, {
-      headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
-    }).then((resp) => {
-      res.json(resp.data);
-    });
-  } catch (err) {console.log(err);}
+  if (req.params.gtkey !== "undefined") {
+    try {
+      axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gtkey}`, {
+        headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }
+      }).then((resp) => {
+        res.json(resp.data);
+      });
+    } catch (err) {console.log(err);}
+  }
 });
 
 // NONCES
@@ -90,6 +92,7 @@ app.get("/api/nonces/:userId", (req, res) => {
     )
     .then((response) => {
       res.json(response.data);
+      console.log('get nonces')
     })
   } catch (err) {console.log(err)}
 });
@@ -159,7 +162,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber", (req, res) => {
   } catch (err) {console.log(err)}
 });
 
-// TASK_KEY
+// TASK_KEY create gt
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
     try {
@@ -171,6 +174,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
           { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID } }
         )
         .then((respGt) => {
+          console.log(`gt_key created - ${respGt.data.result.task_key}`)
           res.json(respGt.data.result.task_key);
         })
       })
@@ -178,12 +182,17 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
   }
 });
 
-// IMAGE not from gt
+// Get first image for PDP from template
 app.get('/api/image/:prodId', (req, res) => {
-  try {
-    axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}})
-    .then((resp) => { res.json(resp.data) });
-  } catch (err) { console.log(err) }
+  if (req.params.prodId) {
+    try {
+      axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}})
+      .then((resp) => { 
+        console.log(`get image from template_number ${req.params.prodId}`);
+        res.json(resp.data) 
+      });
+    } catch (err) { console.log(err) }
+  }
 });
 
 // ORDER   https://test-server-v2.vercel.app/api/orderprintful
@@ -298,7 +307,7 @@ app.get('/api/orderprintful', function(req, res) {
   res.json(arrBody);
 });
 
-// METAFIELDS
+// METAFIELDS created for Shopify
 app.post('/api/sendmetafield', function(req, res) {
   try {
     const customerId = req.body.metafield.namespace;
@@ -307,6 +316,7 @@ app.post('/api/sendmetafield', function(req, res) {
         'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
       }
     }).then((response) => {
+        console.log("req.body.metafield.oldgt - " + req.body.metafield.oldgt);
         let oldGtkey = req.body.metafield.oldgt;
         let currentMetafield = response.data.metafields[0]?response.data.metafields[0].value:'#My collection';
         let newMetafield = (oldGtkey.split(":")[1] == '') ? currentMetafield : currentMetafield.replace(`${oldGtkey},`, '');
@@ -328,16 +338,28 @@ app.post('/api/sendmetafield', function(req, res) {
           .then((response) => {
             res.json(response.data);
 
-            if (customerId && oldGtkey.split(":")[1]) {
+            if (oldGtkey.split(":")[1] && oldGtkey.split(":")[1] !== 'undefined' && oldGtkey.split(":")[1] !== '') {
               cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
                 .then(() => {
-                  console.log(`delete - customers/${customerId}/${oldGtkey.split(":")[1]}`)
+                  console.log(`delete image meta - customers/${customerId}/${oldGtkey.split(":")[1]}`)
                   cloudinary.api.delete_folder(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
                     .then((result) => {
-                      console.log(`delete - customers/${customerId}/${oldGtkey.split(":")[1]}`)
+                      console.log(`delete folder meta - customers/${customerId}/${oldGtkey.split(":")[1]}`)
                       res.json(result);
                     });
                 })
+            } else {
+              const myTimeout = setTimeout(() => {
+                cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
+                .then(() => {
+                  console.log(`delete image meta und - customers/${customerId}/${oldGtkey.split(":")[1]}`)
+                  cloudinary.api.delete_folder(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
+                    .then((result) => {
+                      console.log(`delete folder meta und - customers/${customerId}/${oldGtkey.split(":")[1]}`)
+                      res.json(result);
+                    });
+                })
+              }, 10000);
             }
           });
     });
@@ -377,12 +399,14 @@ app.post('/api/changemetafield', function(req, res) {
       };
       axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
 
-      if (customerId && product_template_gt) {
+      if (customerId && product_template_gt !== 'undefined') {
         cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${product_template_gt}`)
           .then(() => {
+            console.log(`delete image - customers/${customerId}/${product_template_gt}`)
             cloudinary.api
             .delete_folder(`customers/${customerId}/${product_template_gt}`)
             .then((result) => {
+              console.log(`delete folder - customers/${customerId}/${product_template_gt}`)
               res.json(result);
             });
           })
