@@ -328,13 +328,13 @@ app.post('/api/sendmetafield', function(req, res) {
           .then((response) => {
             res.json(response.data);
 
-            cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
-              .then(() => {
-                cloudinary.api.delete_folder(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
-                  .then((result) => {
-                    res.json(result);
-                  });
-              })
+            // cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
+            //   .then(() => {
+            //     cloudinary.api.delete_folder(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
+            //       .then((result) => {
+            //         res.json(result);
+            //       });
+            //   })
 
           });
     });
