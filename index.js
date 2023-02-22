@@ -316,10 +316,10 @@ app.post('/api/sendmetafield', function(req, res) {
         'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
       }
     }).then((response) => {
-        console.log("req.body.metafield.oldgt - " + req.body.metafield.oldgt);
+        console.log("1 req.body.metafield.oldgt  - " + req.body.metafield.oldgt);
         let oldGtkey = req.body.metafield.oldgt;
         let currentMetafield = response.data.metafields[0]?response.data.metafields[0].value:'#My collection';
-        let newMetafield = (oldGtkey.split(":")[1] == '') ? currentMetafield : currentMetafield.replace(`${oldGtkey},`, '');
+        let newMetafield = (oldGtkey == false) ? currentMetafield : currentMetafield.replace(`${oldGtkey},`, '');
 
         const headers = {
           'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
@@ -338,7 +338,7 @@ app.post('/api/sendmetafield', function(req, res) {
           .then((response) => {
             res.json(response.data);
 
-            if (oldGtkey.split(":")[1] && oldGtkey.split(":")[1] !== 'undefined' && oldGtkey.split(":")[1] !== '') {
+            if (oldGtkey !== false) {
               cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
                 .then(() => {
                   console.log(`delete image meta - customers/${customerId}/${oldGtkey.split(":")[1]}`)
@@ -348,18 +348,6 @@ app.post('/api/sendmetafield', function(req, res) {
                       res.json(result);
                     });
                 })
-            } else {
-              const myTimeout = setTimeout(() => {
-                cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
-                .then(() => {
-                  console.log(`delete image meta und - customers/${customerId}/${oldGtkey.split(":")[1]}`)
-                  cloudinary.api.delete_folder(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
-                    .then((result) => {
-                      console.log(`delete folder meta und - customers/${customerId}/${oldGtkey.split(":")[1]}`)
-                      res.json(result);
-                    });
-                })
-              }, 10000);
             }
           });
     });
