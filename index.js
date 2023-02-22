@@ -123,7 +123,36 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber", (req, res) => {
         });
       } else if (respImg.data.result.status == 'pending') {
         console.log(`pending ${gt}`)
-        axios.get(`https://test-server-v2.vercel.app/api/makeimagetocloudinary/${req.params.customer}/${gt}`,)
+        try {
+          let intervalID = setInterval(async() => {
+            const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
+            resjson = await res.json();
+            if (resjson.result.status == 'completed' ) {
+              console.log('completed - ok')
+              // axios.get(`https://test-server-v2.vercel.app/api/makeimagetocloudinary/${req.params.customer}/${gt}`);
+
+              let arrLinkToImage = resjson.result.mockups;
+              arrLinkToImage.forEach((element, index) => {
+                cloudinary.uploader.upload(element.mockup_url, {
+                  resource_type: "image",
+                  public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
+                  overwrite: true
+                });
+              });
+              let arrLinkToImagePrintfiles = resjson.result.printfiles;
+              arrLinkToImagePrintfiles.forEach((element, index) => {
+                cloudinary.uploader.upload(element.url, {
+                  resource_type: "image",
+                  public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
+                  overwrite: true
+                });
+              });
+
+
+              clearInterval(intervalID);
+            }
+          }, 10000);
+        } catch (err) {console.log(err)}
       }
     })
     .then(() => {
@@ -280,6 +309,10 @@ app.post('/api/sendmetafield', function(req, res) {
         'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
       }
     }).then((response) => {
+        let oldGtkey = req.body.metafield.oldgt;
+        let currentMetafield = response.data.metafields[0]?response.data.metafields[0].value:'#My collection';
+        let newMetafield = (oldGtkey.split(":")[1] == '') ? currentMetafield : currentMetafield.replace(`${oldGtkey},`, '');
+
         const headers = {
           'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
           'Content-Type': 'application/json'
@@ -288,13 +321,23 @@ app.post('/api/sendmetafield', function(req, res) {
           "metafield": {
             "namespace": "customer_id",
             "key": "collection_name",
-            "value": `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:'#My collection'}`,
+            // "value": `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:'#My collection'}`,
+            "value": `${req.body.metafield.value},${newMetafield}`,
             "type": "single_line_text_field"
           }
         };
         axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
           .then((response) => {
             res.json(response.data);
+
+            cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
+              .then(() => {
+                cloudinary.api.delete_folder(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
+                  .then((result) => {
+                    res.json(result);
+                  });
+              })
+
           });
     });
   }
@@ -333,8 +376,7 @@ app.post('/api/changemetafield', function(req, res) {
       };
       axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
 
-      cloudinary.api
-        .delete_resources_by_prefix(`customers/${customerId}/${product_template_gt}`, function(result){})
+      cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${product_template_gt}`, function(result){})
         .then(() => {
           cloudinary.api
             .delete_folder(`customers/${customerId}/${product_template_gt}`)
