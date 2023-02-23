@@ -92,77 +92,78 @@ app.get("/api/nonces/:userId", (req, res) => {
     )
     .then((response) => {
       res.json(response.data);
-      console.log('get nonces')
+      console.log('START customizer: get nonces')
     })
   } catch (err) {console.log(err)}
 });
 
-// SAVE-IMAGE-CLOUDINARY  https://4b98-109-86-251-13.eu.ngrok.io/api/makeimagetocloudinary/6341351670004/gt-476757613
-app.get("/api/makeimagetocloudinary/:customer/:gtnumber", (req, res) => {
+// SAVE-IMAGE-TO-CLOUDINARY
+app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, res) => {
   try {
+    let customer = req.params.customer;
     let gt = req.params.gtnumber;
-    axios.get(
-      `https://api.printful.com/mockup-generator/task?task_key=${gt}`,
-      {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}
-    )
+    let new_old = req.params.new_old;
+    let gtUrl = req.params.gtUrl;
+    axios.get(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
     .then((respImg) => {
-      if (respImg.data.result.status == 'completed' ) {
-        console.log(`completed ${gt}`)
-        let arrLinkToImage = respImg.data.result.mockups;
-        arrLinkToImage.forEach((element, index) => {
+      let mockups = respImg.data.result.mockups;
+      let printfiles = respImg.data.result.printfiles;
+      let createImageCloud = (mockups, printfiles) => {
+        mockups.forEach((element, index) => {
           cloudinary.uploader.upload(element.mockup_url, {
             resource_type: "image",
             public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
             overwrite: true
           });
         });
-        let arrLinkToImagePrintfiles = respImg.data.result.printfiles;
-        arrLinkToImagePrintfiles.forEach((element, index) => {
+        printfiles.forEach((element, index) => {
           cloudinary.uploader.upload(element.url, {
             resource_type: "image",
             public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
             overwrite: true
           });
         });
+      }
+      if (respImg.data.result.status == 'completed' ) {
+        console.log(`GT immediately is completed`)
+        createImageCloud(mockups, printfiles);
       } else if (respImg.data.result.status == 'pending') {
-        console.log(`pending ${gt}`)
+        console.log(`GT is pending`)
         try {
           let intervalID = setInterval(async() => {
             const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
             resjson = await res.json();
             if (resjson.result.status == 'completed' ) {
-              console.log('completed - ok')
-              let arrLinkToImage = resjson.result.mockups;
-              arrLinkToImage.forEach((element, index) => {
-                cloudinary.uploader.upload(element.mockup_url, {
-                  resource_type: "image",
-                  public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
-                  overwrite: true
-                });
-              });
-              let arrLinkToImagePrintfiles = resjson.result.printfiles;
-              arrLinkToImagePrintfiles.forEach((element, index) => {
-                cloudinary.uploader.upload(element.url, {
-                  resource_type: "image",
-                  public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
-                  overwrite: true
-                });
-              });
-
-
+              console.log(`GT now is completed`)
+              let mockups = resjson.result.mockups;
+              let printfiles = resjson.result.printfiles;
+              createImageCloud(mockups, printfiles);
               clearInterval(intervalID);
             }
-          }, 10000);
+          }, 9000);
         } catch (err) {console.log(err)}
       }
-    })
-    .then(() => {
+    }).then(() => { 
       res.json(gt);
+      // delete old image-folder on cloudinary if product update
+      if (new_old == "new") {
+        console.log(`NEW nothing to DELETE on cloudinary`);
+      } else if (new_old == 'old' && gtUrl !== false) {
+        cloudinary.api.delete_resources_by_prefix(`customers/${customer}/${gtUrl}`)
+        .then(() => {
+          console.log(`rewrite PRODUCT delete OLD-IMAGE cloud...`)
+          cloudinary.api.delete_folder(`customers/${customer}/${gtUrl}`)
+            .then((result) => {
+              console.log(`rewrite PRODUCT delete OLD-FOLDER cloud...`)
+              res.json(result);
+            });
+        })
+      }
     });
   } catch (err) {console.log(err)}
 });
 
-// TASK_KEY create gt
+// MOCKUP is created, GT return
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
     try {
@@ -174,7 +175,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
           { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID } }
         )
         .then((respGt) => {
-          console.log(`gt_key created - ${respGt.data.result.task_key}`)
+          console.log(`MOCKUP is created, GT return - ${respGt.data.result.task_key}`)
           res.json(respGt.data.result.task_key);
         })
       })
@@ -188,7 +189,7 @@ app.get('/api/image/:prodId', (req, res) => {
     try {
       axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}})
       .then((resp) => { 
-        console.log(`get image from template_number ${req.params.prodId}`);
+        console.log(`IMAGE for DPP from template ${req.params.prodId}`);
         res.json(resp.data) 
       });
     } catch (err) { console.log(err) }
@@ -311,72 +312,44 @@ app.get('/api/orderprintful', function(req, res) {
 app.post('/api/sendmetafield', function(req, res) {
   try {
     const customerId = req.body.metafield.namespace;
-    axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
-      headers: {
-        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
-      }
-    }).then((response) => {
-        console.log("1 req.body.metafield.oldgt  - " + req.body.metafield.oldgt);
-        let oldGtkey = req.body.metafield.oldgt;
-        let currentMetafield = response.data.metafields[0]?response.data.metafields[0].value:'#My collection';
-        let newMetafield = (oldGtkey == false) ? currentMetafield : currentMetafield.replace(`${oldGtkey},`, '');
+    axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
+    .then((response) => {
+      console.log("NEW or OLD product: " + req.body.metafield.oldgt);
 
-        const headers = {
-          'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
-          'Content-Type': 'application/json'
-        };
-        const body = {
-          "metafield": {
-            "namespace": "customer_id",
-            "key": "collection_name",
-            // "value": `${req.body.metafield.value},${response.data.metafields[0]?response.data.metafields[0].value:'#My collection'}`,
-            "value": `${req.body.metafield.value},${newMetafield}`,
-            "type": "single_line_text_field"
-          }
-        };
-        axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
-          .then((response) => {
-            res.json(response.data);
+      let oldGtkey = req.body.metafield.oldgt;
+      let currentMetafield = response.data.metafields[0]?response.data.metafields[0].value:'#My collection';
+      let newMetafield = (oldGtkey == false) ? currentMetafield : currentMetafield.replace(`${oldGtkey},`, '');
 
-            if (oldGtkey !== false) {
-              cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
-                .then(() => {
-                  console.log(`delete image meta - customers/${customerId}/${oldGtkey.split(":")[1]}`)
-                  cloudinary.api.delete_folder(`customers/${customerId}/${oldGtkey.split(":")[1]}`)
-                    .then((result) => {
-                      console.log(`delete folder meta - customers/${customerId}/${oldGtkey.split(":")[1]}`)
-                      res.json(result);
-                    });
-                })
-            }
-          });
+      const headers = { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY, 'Content-Type': 'application/json' };
+      const body = {
+        "metafield": {
+          "namespace": "customer_id",
+          "key": "collection_name",
+          "value": `${req.body.metafield.value},${newMetafield}`,
+          "type": "single_line_text_field"
+        }
+      };
+      axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
+        .then((response) => {
+          res.json(response.data);
+        });
     });
-  }
-  catch (err) {
-    console.log(err);
-  }
+  } catch (err) { console.log(err) }
 });
 
-// METAFIELDS remove products
+// METAFIELDS remove products: REMOVE-CHANGE product METAFIELD-shopify & CLOUDINARY image-folder
 app.post('/api/changemetafield', function(req, res) {
   try {
     const customerId = req.body.customer_id;
     const product_template = req.body.product_template;
     const product_template_gt = req.body.product_template_gt;
-
-    axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, {
-      headers: {
-        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY
-      }
-    }).then((response) => {
-
+    // get current data from metafield shopify
+    axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
+    .then((response) => {
+      // send update data to metafield shopify
       const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
       const newData = existData.replace(`${product_template},`, '');
-
-      const headers = {
-        'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY,
-        'Content-Type': 'application/json'
-      };
+      const headers = { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY, 'Content-Type': 'application/json' };
       const body = {
         "metafield": {
           "namespace": "customer_id",
@@ -386,15 +359,14 @@ app.post('/api/changemetafield', function(req, res) {
         }
       };
       axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
-
+      // delete image & folder on cloudinary after delete product (x)
       if (customerId && product_template_gt !== 'undefined') {
         cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${product_template_gt}`)
           .then(() => {
-            console.log(`delete image - customers/${customerId}/${product_template_gt}`)
-            cloudinary.api
-            .delete_folder(`customers/${customerId}/${product_template_gt}`)
+            console.log(`delete PRODUCT -> IMAGE cloudinary`)
+            cloudinary.api.delete_folder(`customers/${customerId}/${product_template_gt}`)
             .then((result) => {
-              console.log(`delete folder - customers/${customerId}/${product_template_gt}`)
+              console.log(`delete PRODUCT -> FOLDER cloudinary`)
               res.json(result);
             });
           })
@@ -404,9 +376,6 @@ app.post('/api/changemetafield', function(req, res) {
   catch (err) {
     console.log(err);
   }
-});
-app.get('/api/changemetafield', function(req, res) {
-  res.json();
 });
 
 // METAFIELD name-collection
