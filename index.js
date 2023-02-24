@@ -88,6 +88,13 @@ app.get("/api/nonces/:userId", (req, res) => {
 });
 
 // SAVE-IMAGE-TO-CLOUDINARY
+function statusUpdate() {
+  let count = 0;
+  console.log(`Tiime ${count++}`);
+  if (count === 3) {
+    clearInterval(statusUpdate);
+  }
+}
 app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, res) => {
   try {
     let customer = req.params.customer;
@@ -119,6 +126,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
         createImageCloud(mockups, printfiles);
       } else if (respImg.data.result.status == 'pending') {
         console.log(`GT is pending`)
+
         try {
           let intervalID = setInterval(async() => {
             const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
@@ -132,6 +140,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
             } else {console.log('awaiting ...')}
           }, 9000);
         } catch (err) {console.log(err)}
+
       }
     }).then(() => { 
       res.json(gt);
@@ -152,6 +161,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
     });
   } catch (err) {console.log(err)}
 });
+setInterval(statusUpdate, 5000);
 
 // MOCKUP is created, GT return
 app.get("/api/template/:templateId/:customer", (req, res) => {
