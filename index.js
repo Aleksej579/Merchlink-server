@@ -87,14 +87,9 @@ app.get("/api/nonces/:userId", (req, res) => {
   } catch (err) {console.log(err)}
 });
 
+
 // SAVE-IMAGE-TO-CLOUDINARY
-function statusUpdate() {
-  let count = 0;
-  console.log(`Tiime ${count++}`);
-  if (count === 3) {
-    clearInterval(statusUpdate);
-  }
-}
+let awaitingGT;
 app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, res) => {
   try {
     let customer = req.params.customer;
@@ -128,7 +123,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
         console.log(`GT is pending`)
 
         try {
-          let intervalID = setInterval(async() => {
+          awaitingGT = async () => {
             const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
             resjson = await res.json();
             if (resjson.result.status == 'completed' ) {
@@ -136,9 +131,24 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
               let mockups = resjson.result.mockups;
               let printfiles = resjson.result.printfiles;
               createImageCloud(mockups, printfiles);
-              clearInterval(intervalID);
+              clearInterval(testInterval);
+              console.log('GT is Retrieved')
             } else {console.log('awaiting ...')}
-          }, 9000);
+          }
+
+
+          // let intervalID = setInterval(async() => {
+          //   const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
+          //   resjson = await res.json();
+          //   if (resjson.result.status == 'completed' ) {
+          //     console.log(`GT now is completed`)
+          //     let mockups = resjson.result.mockups;
+          //     let printfiles = resjson.result.printfiles;
+          //     createImageCloud(mockups, printfiles);
+          //     clearInterval(intervalID);
+          //   } else {console.log('awaiting ...')}
+          // }, 9000);
+
         } catch (err) {console.log(err)}
 
       }
@@ -161,7 +171,22 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
     });
   } catch (err) {console.log(err)}
 });
-setInterval(statusUpdate, 5000);
+
+
+let testInterval = setInterval(() => {
+  awaitingGT
+}, 9000)
+
+// let count = 0;
+// let testInterval = setInterval(() => {
+//   console.log(`Tiime ${count}`);
+//   count++;
+//   if (count === 3) {
+//     clearInterval(testInterval);
+//     console.log('time is out')
+//   }
+// }, 3000)
+
 
 // MOCKUP is created, GT return
 app.get("/api/template/:templateId/:customer", (req, res) => {
