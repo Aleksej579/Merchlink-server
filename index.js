@@ -129,7 +129,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
               let printfiles = resjson.result.printfiles;
               createImageCloud(mockups, printfiles);
               clearInterval(intervalID);
-            }
+            } else {console.log('awaiting ...')}
           }, 9000);
         } catch (err) {console.log(err)}
       }
