@@ -99,7 +99,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
     let new_old = req.params.new_old;
     let gtUrl = req.params.gtUrl;
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
-    .then((respImg) => {
+    .then( async (respImg) => {
       let mockups = respImg.data.result.mockups;
       let printfiles = respImg.data.result.printfiles;
       let createImageCloud = (mockups, printfiles) => {
@@ -125,18 +125,52 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
         console.log(`GT is pending`)
 
         try {
-          let testInterval = setInterval(async () => {
+
+          // let testInterval = setInterval(async () => {
+            // const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
+            // resjson = await res.json();
+            // if (resjson.result.status == 'completed') {
+            //   console.log(`GT now is completed`)
+            //   let mockups = resjson.result.mockups;
+            //   let printfiles = resjson.result.printfiles;
+            //   createImageCloud(mockups, printfiles);
+            //   clearInterval(testInterval);
+            //   console.log('GT is Retrieved')
+            // } else {console.log('awaiting ...')}
+          // }, 11000)
+
+          // sending several queries in succession
+          // let gtResult = "";
+          do {
+            // const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${respGt.data.result.task_key}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
+            // resjson = await res.json();
+            // gtResult = await resjson.result.task_key;
             const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
             resjson = await res.json();
-            if (resjson.result.status == 'completed') {
-              console.log(`GT now is completed`)
-              let mockups = resjson.result.mockups;
-              let printfiles = resjson.result.printfiles;
-              createImageCloud(mockups, printfiles);
-              clearInterval(testInterval);
-              console.log('GT is Retrieved')
-            } else {console.log('awaiting ...')}
-          }, 11000)
+            console.log(`GT now is completed`)
+
+            let mockups = resjson.result.mockups;
+            let printfiles = resjson.result.printfiles;
+            createImageCloud(mockups, printfiles);
+            // clearInterval(testInterval);
+            console.log('GT is Retrieved')
+          } while (resjson.result.status == 'completed');
+          console.log('GT is Retrieved')
+          // res.json(gtResult);
+
+          // let testInterval = setInterval(async () => {
+          //   const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
+          //   resjson = await res.json();
+          //   if (resjson.result.status == 'completed') {
+          //     console.log(`GT now is completed`)
+          //     let mockups = resjson.result.mockups;
+          //     let printfiles = resjson.result.printfiles;
+          //     createImageCloud(mockups, printfiles);
+          //     clearInterval(testInterval);
+          //     console.log('GT is Retrieved')
+          //   } else {console.log('awaiting ...')}
+          // }, 11000)
+
         } catch (err) {console.log(err)}
       }
     }).then(() => { 
