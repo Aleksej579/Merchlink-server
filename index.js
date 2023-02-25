@@ -147,13 +147,14 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
             // gtResult = await resjson.result.task_key;
             const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
             resjson = await res.json();
-            console.log(`GT now is completed`)
-
-            let mockups = resjson.result.mockups;
-            let printfiles = resjson.result.printfiles;
-            createImageCloud(mockups, printfiles);
-            // clearInterval(testInterval);
-            console.log('GT is Retrieved')
+            if (resjson.result.status == 'completed') {
+              console.log(`GT now is completed`)
+              let mockups = resjson.result.mockups;
+              let printfiles = resjson.result.printfiles;
+              createImageCloud(mockups, printfiles);
+              // clearInterval(testInterval);
+              // console.log('GT is Retrieved')
+            }
           } while (resjson.result.status == 'completed');
           console.log('GT is Retrieved')
           // res.json(gtResult);
