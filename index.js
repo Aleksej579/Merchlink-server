@@ -31,6 +31,10 @@ app.get("/", (req, res) => {
   res.send('Server!');
 });
 
+app.get("/test", (req, res) => {
+  res.json('gt-123');
+});
+
 // test get all template
 app.get('/test-get-alltemplates', (req, res) => {
   try {
@@ -87,9 +91,7 @@ app.get("/api/nonces/:userId", (req, res) => {
   } catch (err) {console.log(err)}
 });
 
-
 // SAVE-IMAGE-TO-CLOUDINARY
-let awaitingGT;
 app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, res) => {
   try {
     let customer = req.params.customer;
@@ -116,17 +118,17 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
           });
         });
       }
-      if (respImg.data.result.status == 'completed' ) {
+      if (respImg.data.result.status == 'completed') {
         console.log(`GT immediately is completed`)
         createImageCloud(mockups, printfiles);
       } else if (respImg.data.result.status == 'pending') {
         console.log(`GT is pending`)
 
         try {
-          awaitingGT = async () => {
+          let testInterval = setInterval(async () => {
             const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
             resjson = await res.json();
-            if (resjson.result.status == 'completed' ) {
+            if (resjson.result.status == 'completed') {
               console.log(`GT now is completed`)
               let mockups = resjson.result.mockups;
               let printfiles = resjson.result.printfiles;
@@ -134,23 +136,8 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
               clearInterval(testInterval);
               console.log('GT is Retrieved')
             } else {console.log('awaiting ...')}
-          }
-
-
-          // let intervalID = setInterval(async() => {
-          //   const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
-          //   resjson = await res.json();
-          //   if (resjson.result.status == 'completed' ) {
-          //     console.log(`GT now is completed`)
-          //     let mockups = resjson.result.mockups;
-          //     let printfiles = resjson.result.printfiles;
-          //     createImageCloud(mockups, printfiles);
-          //     clearInterval(intervalID);
-          //   } else {console.log('awaiting ...')}
-          // }, 9000);
-
+          }, 11000)
         } catch (err) {console.log(err)}
-
       }
     }).then(() => { 
       res.json(gt);
@@ -172,43 +159,42 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
   } catch (err) {console.log(err)}
 });
 
-
-let testInterval = setInterval(() => {
-  awaitingGT
-}, 9000)
-
-// let count = 0;
-// let testInterval = setInterval(() => {
-//   console.log(`Tiime ${count}`);
-//   count++;
-//   if (count === 3) {
-//     clearInterval(testInterval);
-//     console.log('time is out')
-//   }
-// }, 3000)
-
-
-// MOCKUP is created, GT return
+// 1. get TEMPLATE, create MOCKUP return GT
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
     try {
       axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`} })
       .then((resTemplates) => {
-        return axios.post(
+        axios.post(
           `https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
           { "variant_ids": resTemplates.data.result.available_variant_ids, "format": "jpg", "product_template_id": resTemplates.data.result.id },
           { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID } }
         )
-        .then((respGt) => {
-          console.log(`MOCKUP is created, GT return - ${respGt.data.result.task_key}`)
-          res.json(respGt.data.result.task_key);
+        .then(async (respGt) => {
+          if (respGt.data.result.status == 'completed') {
+            console.log(`MOCKUP is created, GT YES-completed - ${respGt.data.result.task_key}`)
+            return res.json(respGt.data.result.task_key);
+          } else {
+            console.log(`MOCKUP is created, GT NO-completed - ${respGt.data.result.task_key}`)
+            try {
+              // sending several queries in succession
+              let gtResult = "";
+              do {
+                const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${respGt.data.result.task_key}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
+                resjson = await res.json();
+                gtResult = await resjson.result.task_key;
+              } while (resjson.result.status == 'completed');
+              console.log(`MOCKUP is created, GT return YES-COMPLETED: ${gtResult}`)
+              res.json(gtResult);
+            } catch (err) {console.log(err)}
+          }
         })
       })
     } catch (err) {console.log(err) }
   }
 });
 
-// Get first image for PDP from template
+// 2. Get IMAGE for PDP from TEMPLATE
 app.get('/api/image/:prodId', (req, res) => {
   if (req.params.prodId) {
     try {
@@ -298,7 +284,7 @@ app.post('/api/orderprintful', async (req, res) => {
   printful.length = 0;
 });
 
-// METAFIELDS created for Shopify
+// METAFIELDS created for Shopify   // https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/6341351670004/metafields.json
 app.post('/api/sendmetafield', (req, res) => {
   try {
     const customerId = req.body.metafield.namespace;
@@ -317,10 +303,12 @@ app.post('/api/sendmetafield', (req, res) => {
           "type": "single_line_text_field"
         }
       };
-      axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
+      try {
+        axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
         .then((response) => {
           res.json(response.data);
         });
+      } catch (err) { console.log(err) }
     });
   } catch (err) { console.log(err) }
 });
