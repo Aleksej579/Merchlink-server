@@ -68,12 +68,13 @@ app.get('/test-get-variantid/:variantid', (req, res) => {
   catch (err) {console.log(err);}
 });
 
-// GT-IMAGE + save image
+// IMAGES for COLECTIONS
 app.get('/api/gtkey/:gtkey', (req, res) => {
   if (req.params.gtkey !== "undefined") {
     try {
       axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gtkey}`, {headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
       .then((resp) => {
+        console.log(`IMAGE-collections: is-LOAD: product = ${req.params.gtkey}`)
         res.json(resp.data);
       });
     } catch (err) {console.log(err);}
@@ -86,7 +87,7 @@ app.get("/api/nonces/:userId", (req, res) => {
     axios.post("https://api.printful.com/embedded-designer/nonces", {"external_product_id": `${req.params.userId}`}, {headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}` }})
     .then((response) => {
       res.json(response.data);
-      console.log('START customizer: get nonces')
+      console.log(`START-customizer: get-NONCES`)
     })
   } catch (err) {console.log(err)}
 });
@@ -119,82 +120,55 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
         });
       }
       if (respImg.data.result.status == 'completed') {
-        console.log(`GT immediately is completed`)
         createImageCloud(mockups, printfiles);
+        console.log(`CLOUDINARY: GT-COMPLETED-immediately: new-IMAGE/FOLDER-created`)
+        // delete OLD product from cloudinary
+        if (new_old == 'old' && gtUrl !== false) {
+          cloudinary.api.delete_resources_by_prefix(`customers/${customer}/${gtUrl}`)
+          .then(() => {
+            cloudinary.api.delete_folder(`customers/${customer}/${gtUrl}`)
+              .then((result) => {
+                console.log(`CLOUDINARY: GT-COMPLETED-immediately: old-IMAGE/FOLDER-delete`)
+                res.json(result);
+              });
+          })
+        }
       } else if (respImg.data.result.status == 'pending') {
-        console.log(`GT is pending`)
-
+        console.log(`CLOUDINARY: GT-PENDING`)
         try {
-
-          // let testInterval = setInterval(async () => {
-            // const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
-            // resjson = await res.json();
-            // if (resjson.result.status == 'completed') {
-            //   console.log(`GT now is completed`)
-            //   let mockups = resjson.result.mockups;
-            //   let printfiles = resjson.result.printfiles;
-            //   createImageCloud(mockups, printfiles);
-            //   clearInterval(testInterval);
-            //   console.log('GT is Retrieved')
-            // } else {console.log('awaiting ...')}
-          // }, 11000)
-
-          // sending several queries in succession
-          // let gtResult = "";
+          let resjson;
+          let status = '';
           do {
-            // const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${respGt.data.result.task_key}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
-            // resjson = await res.json();
-            // gtResult = await resjson.result.task_key;
             const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
             resjson = await res.json();
-            if (resjson.result.status == 'completed') {
-              console.log(`GT now is completed`)
-              let mockups = resjson.result.mockups;
-              let printfiles = resjson.result.printfiles;
-              createImageCloud(mockups, printfiles);
-              // clearInterval(testInterval);
-              // console.log('GT is Retrieved')
+            status = resjson.result.status;
+          } while (status == 'pending');
+          // execute save
+          if (status == 'completed') {
+            let mockups = resjson.result.mockups;
+            let printfiles = resjson.result.printfiles;
+            // create NEW product on cloudinary
+            createImageCloud(mockups, printfiles);
+            console.log(`CLOUDINARY: GT-COMPLETED-delayed: new-IMAGE/FOLDER-created`);
+            // delete OLD product from cloudinary
+            if (new_old == 'old' && gtUrl !== false) {
+              await cloudinary.api.delete_resources_by_prefix(`customers/${customer}/${gtUrl}`)
+              .then( async () => {
+                await cloudinary.api.delete_folder(`customers/${customer}/${gtUrl}`)
+                  .then((result) => {
+                    console.log(`CLOUDINARY: GT-COMPLETED-delayed: old-IMAGE/FOLDER-delete`);
+                    res.json(result);
+                  });
+              })
             }
-          } while (resjson.result.status == 'completed');
-          console.log('GT is Retrieved')
-          // res.json(gtResult);
-
-          // let testInterval = setInterval(async () => {
-          //   const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${gt}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
-          //   resjson = await res.json();
-          //   if (resjson.result.status == 'completed') {
-          //     console.log(`GT now is completed`)
-          //     let mockups = resjson.result.mockups;
-          //     let printfiles = resjson.result.printfiles;
-          //     createImageCloud(mockups, printfiles);
-          //     clearInterval(testInterval);
-          //     console.log('GT is Retrieved')
-          //   } else {console.log('awaiting ...')}
-          // }, 11000)
-
+          }
         } catch (err) {console.log(err)}
       }
-    }).then(() => { 
-      res.json(gt);
-      // delete old image-folder on cloudinary if product update
-      if (new_old == "new") {
-        console.log(`NEW nothing to DELETE on cloudinary`);
-      } else if (new_old == 'old' && gtUrl !== false) {
-        cloudinary.api.delete_resources_by_prefix(`customers/${customer}/${gtUrl}`)
-        .then(() => {
-          console.log(`rewrite PRODUCT delete OLD-IMAGE cloud...`)
-          cloudinary.api.delete_folder(`customers/${customer}/${gtUrl}`)
-            .then((result) => {
-              console.log(`rewrite PRODUCT delete OLD-FOLDER cloud...`)
-              res.json(result);
-            });
-        })
-      }
-    });
+    }).then(() => { res.json(gt) });
   } catch (err) {console.log(err)}
 });
 
-// 1. get TEMPLATE, create MOCKUP return GT
+// TEMPLATE-create, MOCKUP-return-GT
 app.get("/api/template/:templateId/:customer", (req, res) => {
   if (req.params.templateId) {
     try {
@@ -207,10 +181,10 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
         )
         .then(async (respGt) => {
           if (respGt.data.result.status == 'completed') {
-            console.log(`MOCKUP is created, GT YES-completed - ${respGt.data.result.task_key}`)
+            console.log(`MOCKUP-created, GT-COMPLETED-immediately`)
             return res.json(respGt.data.result.task_key);
           } else {
-            console.log(`MOCKUP is created, GT NO-completed - ${respGt.data.result.task_key}`)
+            console.log(`MOCKUP-created, GT-PENDING`)
             try {
               // sending several queries in succession
               let gtResult = "";
@@ -219,7 +193,7 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
                 resjson = await res.json();
                 gtResult = await resjson.result.task_key;
               } while (resjson.result.status == 'completed');
-              console.log(`MOCKUP is created, GT return YES-COMPLETED: ${gtResult}`)
+              console.log(`MOCKUP-created, GT-COMPLETED-delayed`)
               res.json(gtResult);
             } catch (err) {console.log(err)}
           }
@@ -229,13 +203,13 @@ app.get("/api/template/:templateId/:customer", (req, res) => {
   }
 });
 
-// 2. Get IMAGE for PDP from TEMPLATE
+// IMAGE-PDP from TEMPLATE
 app.get('/api/image/:prodId', (req, res) => {
   if (req.params.prodId) {
     try {
       axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`}})
       .then((resp) => { 
-        console.log(`IMAGE for DPP from template ${req.params.prodId}`);
+        console.log(`DPP create-IMAGE`);
         res.json(resp.data) 
       });
     } catch (err) { console.log(err) }
@@ -319,13 +293,12 @@ app.post('/api/orderprintful', async (req, res) => {
   printful.length = 0;
 });
 
-// METAFIELDS created for Shopify   // https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/6341351670004/metafields.json
+// METAFIELDS created Shopify
 app.post('/api/sendmetafield', (req, res) => {
   try {
     const customerId = req.body.metafield.namespace;
     axios.get(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
     .then((response) => {
-      console.log("NEW or OLD product: " + req.body.metafield.oldgt);
       let oldGtkey = req.body.metafield.oldgt;
       let currentMetafield = response.data.metafields[0]?response.data.metafields[0].value:'#My collection';
       let newMetafield = (oldGtkey == false) ? currentMetafield : currentMetafield.replace(`${oldGtkey},`, '');
@@ -341,6 +314,7 @@ app.post('/api/sendmetafield', (req, res) => {
       try {
         axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
         .then((response) => {
+          console.log(`METAFIELDS: create|update`);
           res.json(response.data);
         });
       } catch (err) { console.log(err) }
@@ -348,7 +322,7 @@ app.post('/api/sendmetafield', (req, res) => {
   } catch (err) { console.log(err) }
 });
 
-// METAFIELDS remove products: REMOVE-CHANGE product METAFIELD-shopify & CLOUDINARY image-folder
+// METAFIELDS & CLOUDINARY remove products
 app.post('/api/changemetafield', (req, res) => {
   try {
     const customerId = req.body.customer_id;
@@ -370,14 +344,14 @@ app.post('/api/changemetafield', (req, res) => {
         }
       };
       axios.post(`https://all-u-sportswear.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+      console.log(`METAFIELDS: remove-product`);
       // delete image & folder on cloudinary after delete product (x)
       if (customerId && product_template_gt !== 'undefined') {
         cloudinary.api.delete_resources_by_prefix(`customers/${customerId}/${product_template_gt}`)
           .then(() => {
-            console.log(`delete PRODUCT -> IMAGE cloudinary`)
             cloudinary.api.delete_folder(`customers/${customerId}/${product_template_gt}`)
             .then((result) => {
-              console.log(`delete PRODUCT -> FOLDER cloudinary`)
+              console.log(`CLOUDINARY: remove-product`);
               res.json(result);
             });
           })
