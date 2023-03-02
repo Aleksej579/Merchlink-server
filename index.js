@@ -221,13 +221,11 @@ app.post('/api/orderprintful', async (req, res) => {
   let arrBody = [];
   let printful = [];
   for(let [index, item] of req.body.line_items.entries()) {
-    // if (item.properties[0].name == 'customize_detail_order' && item.properties[0].value != "") {
-    if (item.properties[0].value != "") {
+    if (item.properties[0]?.name == 'customize_detail_order' && item.properties[0]?.value != "") {
 
       // test
       let skuNumber;
-      // if (item.properties[1].name == 'property_sku' && item.properties[1].value != "") {
-      if (item.properties[1].value != "") {
+      if (item.properties[1]?.name == 'property_sku' && item.properties[1]?.value != "") {
         skuNumber = item.properties[1].value;
         console.log(skuNumber);
       }
