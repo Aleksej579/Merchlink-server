@@ -222,13 +222,21 @@ app.post('/api/orderprintful', async (req, res) => {
   let printful = [];
   for(let [index, item] of req.body.line_items.entries()) {
     if (item.properties[0].name == 'customize_detail_order' && item.properties[0].value != "") {
+      
+      // test
+      if (item.properties[1].name == 'property_sku' && item.properties[1].value != "") {
+        let skuNumber = item.properties[1].value;
+        console.log(skuNumber);
+      }
+
       try {
         const keyGt = item.properties[0].value;
         await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
         .then(response => {
           arrBody.push({
             "to_printful": true,
-            "variant_id": +`${response.data.result.printfiles[0].variant_ids}`.split(',')[0],
+            // "variant_id": +`${response.data.result.printfiles[0].variant_ids}`.split(',')[0],
+            "variant_id": +`${skuNumber}`,
             "quantity": +`${req.body.line_items[index].quantity}`,
             "files": [
               {
