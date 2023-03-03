@@ -221,18 +221,14 @@ app.post('/api/orderprintful', async (req, res) => {
   let arrBody = [];
   let printful = [];
   for(let [index, item] of req.body.line_items.entries()) {
-
-    // resolve .name for next order
-    
-    if (item.properties[0].name == 'customize_detail_order' && item.properties[0].value != "") {
+    if (item.properties.length != 0 && item.properties[0].name == 'customize_detail_order' && item.properties[0].value != "") {
       try {
         let skuNumber = await item.sku.split('_')[1];
         const keyGt = item.properties[0].value;
         await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
         .then(response => {
           arrBody.push({
-            "to_printful": true,
-            // "variant_id": +`${response.data.result.printfiles[0].variant_ids}`.split(',')[0],
+            // "to_printful": true,
             "variant_id": +`${skuNumber}`,
             "quantity": +`${req.body.line_items[index].quantity}`,
             "files": [
@@ -245,7 +241,7 @@ app.post('/api/orderprintful', async (req, res) => {
         })
       }
       catch (err) { console.log(err) }
-    } else {
+    } else if (item.properties.length != 0) {
       try {
         await axios.get(`https://all-u-sportswear.myshopify.com/admin/products/${req.body.line_items[index].product_id}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
         .then( async (resp) => {
@@ -258,13 +254,13 @@ app.post('/api/orderprintful', async (req, res) => {
             });
           })
         });
-      }
-      catch (err) { console.log(err) }
+      } catch (err) { console.log(err) }
     }
   }
 
   for(let item of arrBody) {
-    if (item.hasOwnProperty('to_printful')) {
+    // if (item.hasOwnProperty('to_printful')) {
+    if (item.hasOwnProperty('files')) {
       printful.push(true);
     }else {
       printful.push(false);
@@ -273,7 +269,7 @@ app.post('/api/orderprintful', async (req, res) => {
 
   if (printful.includes(true)) {
     try{
-      const headers = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID };
+      const headers = {'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'Content-Type': 'application/json', 'X-PF-Store-Id': `${process.env.STORE_ID}`};
       const body = {
         "recipient": {
           "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
@@ -285,7 +281,8 @@ app.post('/api/orderprintful', async (req, res) => {
         },
         "items": arrBody
       };
-
+      // ERROR
+      console.log(body)
       await axios.post("https://api.printful.com/orders", body, { headers })
       .then( async () => {
         arrBody.length = 0;
@@ -294,6 +291,8 @@ app.post('/api/orderprintful', async (req, res) => {
         await axios.delete(`https://api.printful.com/orders/@${req.body.order_number}`, {headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
       });
     } catch (err) { console.log(err) }
+  } else {
+    console.log(`ORDER: no matching items`);
   }
   arrBody.length = 0;
   printful.length = 0;
