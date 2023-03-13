@@ -31,10 +31,6 @@ app.get("/", (req, res) => {
   res.send('Server!');
 });
 
-app.get("/test", (req, res) => {
-  res.json('gt-123');
-});
-
 // test get all template
 app.get('/test-get-alltemplates', (req, res) => {
   try {
@@ -193,7 +189,9 @@ app.get("/api/template/:templateId", async (req, res) => {
                 resjson = await res.json();
                 gtResult = await resjson.result.task_key;
               } while (resjson.result.status == 'completed');
-              console.log(`MOCKUP-created, GT-COMPLETED-delayed`)
+              console.log(`MOCKUP-created, GT-COMPLETED-delayed`);
+              // delete Template for new designer
+              axios.delete(`https://api.printful.com/product-templates/@${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID} })
               res.json(gtResult);
             } catch (err) {console.log(err)}
           }
