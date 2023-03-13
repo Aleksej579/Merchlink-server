@@ -191,7 +191,9 @@ app.get("/api/template/:templateId", async (req, res) => {
               } while (resjson.result.status == 'completed');
               console.log(`MOCKUP-created, GT-COMPLETED-delayed`);
               // delete Template for new designer
+              console.log(`TEMPLATE-delete: Start`);
               axios.delete(`https://api.printful.com/product-templates/@${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID} })
+              console.log(`TEMPLATE-delete: Completed`);
               res.json(gtResult);
             } catch (err) {console.log(err)}
           }
