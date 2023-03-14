@@ -77,6 +77,14 @@ app.get('/api/gtkey/:gtkey', (req, res) => {
   }
 });
 
+// TEMPLATE printful Remove
+// app.get("/api/deletetemplate/:templateId", (req, res) => {
+//   try {
+//     axios.delete(`https://api.printful.com/product-templates/@${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID} })
+//     console.log(`TEMPLATE-delete: Completed`);
+//   } catch (err) {console.log(err)}
+// });
+
 // NONCES open customizer
 app.get("/api/nonces/:userId", (req, res) => {
   try {
@@ -88,7 +96,7 @@ app.get("/api/nonces/:userId", (req, res) => {
   } catch (err) {console.log(err)}
 });
 
-// SAVE-IMAGE-TO-CLOUDINARY
+// SAVE-IMAGE-TO-CLOUDINARY + delete old image/folder
 app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, res) => {
   try {
     let customer = req.params.customer;
@@ -147,7 +155,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
             createImageCloud(mockups, printfiles);
             console.log(`CLOUDINARY: GT-COMPLETED-delayed: new-IMAGE/FOLDER-created`);
             // delete OLD product from cloudinary
-            if (new_old == 'old' && gtUrl !== false) {
+            if (new_old == 'old' && gtUrl !== false && gtUrl !== undefined) {
               await cloudinary.api.delete_resources_by_prefix(`customers/${customer}/${gtUrl}`)
               .then( async () => {
                 await cloudinary.api.delete_folder(`customers/${customer}/${gtUrl}`)
@@ -189,17 +197,11 @@ app.get("/api/template/:templateId", async (req, res) => {
                 resjson = await res.json();
                 gtResult = await resjson.result.task_key;
               } while (resjson.result.status == 'completed');
-              console.log(`MOCKUP-created, GT-COMPLETED-delayed`);
-              
-              // delete Template for new designer
-
-              // console.log(`TEMPLATE-delete: Start`);
-              // axios.delete(`https://api.printful.com/product-templates/@${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID} })
-              // console.log(`TEMPLATE-delete: Completed`);
-              
+              console.log(`MOCKUP-created, GT-COMPLETED-delayed`);  
               res.json(gtResult);
             } catch (err) {console.log(err)}
           }
+          
         })
       })
     } catch (err) {console.log(err) }
