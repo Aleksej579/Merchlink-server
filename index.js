@@ -190,6 +190,7 @@ app.get("/api/template/:templateId", async (req, res) => {
                 gtResult = await resjson.result.task_key;
               } while (resjson.result.status == 'completed');
               console.log(`MOCKUP-created, GT-COMPLETED-delayed`);
+              
               // delete Template for new designer
 
               // console.log(`TEMPLATE-delete: Start`);
@@ -261,7 +262,6 @@ app.post('/api/orderprintful', async (req, res) => {
   }
 
   for(let item of arrBody) {
-    // if (item.hasOwnProperty('to_printful')) {
     if (item.hasOwnProperty('files')) {
       printful.push(true);
     }else {
