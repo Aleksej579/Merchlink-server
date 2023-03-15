@@ -230,10 +230,10 @@ app.post('/api/orderprintful', async (req, res) => {
       try {
         let skuNumber = await item.sku.split('_')[1];
         const keyGt = item.properties[0].value;
+        // let optionsDataThread_colors = await axios.get(`https://api.printful.com/products/variant/${+`${skuNumber}`}`, {headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
         await axios.get(`https://api.printful.com/mockup-generator/task?task_key=${keyGt}`, {headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
-        .then(response => {
+        .then( (response) => {
           arrBody.push({
-            // "to_printful": true,
             "variant_id": +`${skuNumber}`,
             "quantity": +`${req.body.line_items[index].quantity}`,
             "files": [
@@ -241,8 +241,15 @@ app.post('/api/orderprintful', async (req, res) => {
                 "placement": `${response.data.result.printfiles[0].placement}`,
                 "url": `https://res.cloudinary.com/dqyorwnfk/image/upload/customers/${req.body.customer.id}/${keyGt}/image__printfiles-${0}.jpg`
               }
-            ]
+            ],
+            // "options": [
+            //   {
+            //     "id": "thread_colors",
+            //     "value": Array.from(Object.keys(optionsDataThread_colors.data.result.product.options[1].values))
+            //   }
+            // ]
           });
+
         })
       }
       catch (err) { console.log(err) }
@@ -266,18 +273,15 @@ app.post('/api/orderprintful', async (req, res) => {
       } catch (err) { console.log(err) }
     }
   }
-
+  
   for(let item of arrBody) {
-    if (item.hasOwnProperty('files')) {
-      printful.push(true);
-    }else {
-      printful.push(false);
-    }
+    if (item.hasOwnProperty('files')) { printful.push(true) }
+    else { printful.push(false) }
   }
-
+  
   if (printful.includes(true)) {
     try{
-      const headers = {'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'Content-Type': 'application/json', 'X-PF-Store-Id': `${process.env.STORE_ID}`};
+      // const headers = { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'Content-Type': 'application/json', 'X-PF-Store-Id': `${process.env.STORE_ID}` };
       const body = {
         "recipient": {
           "name": `${req.body.customer.first_name} ${req.body.customer.last_name}`,
@@ -289,9 +293,12 @@ app.post('/api/orderprintful', async (req, res) => {
         },
         "items": arrBody
       };
-
-      await axios.post("https://api.printful.com/orders", body, { headers })
+      await axios.post(`https://api.printful.com/orders`, 
+        body, 
+        {headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'Content-Type': 'application/json', 'X-PF-Store-ID': `${process.env.STORE_ID}` }}
+      )
       .then( () => {
+        console.log(`TEST-2!`);
         arrBody.length = 0;
         printful.length = 0;
         axios.delete(`https://all-u-sportswear.myshopify.com/admin/api/2022-10/orders/${req.body.id}.json`, {headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
