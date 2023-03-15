@@ -250,14 +250,18 @@ app.post('/api/orderprintful', async (req, res) => {
       try {
         await axios.get(`https://all-u-sportswear.myshopify.com/admin/products/${req.body.line_items[index].product_id}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
         .then( async (resp) => {
-          await axios.get(`https://api.printful.com/product-templates/@${resp.data.metafields[0].value}`, { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
-          .then( async (resp) => {
-            arrBody.push({
-              "variant_id": +`${req.body.line_items[index].sku}`.split('_')[1],
-              "quantity": +`${req.body.line_items[index].quantity}`,
-              "product_template_id": +`${resp.data.result.id}`
-            });
-          })
+          for (let itemMeta of resp.data.metafields) {
+            if (itemMeta.namespace == 'printful') {
+              await axios.get(`https://api.printful.com/product-templates/@${itemMeta.value}`, { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
+              .then( async (resp) => {
+                arrBody.push({
+                  "variant_id": +`${req.body.line_items[index].sku}`.split('_')[1],
+                  "quantity": +`${req.body.line_items[index].quantity}`,
+                  "product_template_id": +`${resp.data.result.id}`
+                });
+              })
+            }
+          }
         });
       } catch (err) { console.log(err) }
     }
@@ -285,14 +289,16 @@ app.post('/api/orderprintful', async (req, res) => {
         },
         "items": arrBody
       };
-      // ERROR
-      console.log(body)
+
       await axios.post("https://api.printful.com/orders", body, { headers })
-      .then( async () => {
+      .then( () => {
         arrBody.length = 0;
         printful.length = 0;
-        await axios.delete(`https://all-u-sportswear.myshopify.com/admin/api/2022-10/orders/${req.body.id}.json`, {headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
-        await axios.delete(`https://api.printful.com/orders/@${req.body.order_number}`, {headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
+        axios.delete(`https://all-u-sportswear.myshopify.com/admin/api/2022-10/orders/${req.body.id}.json`, {headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
+          .then(() => {
+            axios.delete(`https://api.printful.com/orders/@${req.body.order_number}`, {headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
+            console.log(`ORDER: complete`)
+          })
       });
     } catch (err) { console.log(err) }
   } else {
