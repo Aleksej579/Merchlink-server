@@ -172,7 +172,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
   } catch (err) {console.log(err)}
 });
 
-// TEMPLATE-create, MOCKUP-return-GT
+// TEMPLATE-create, MOCKUP-return-GT.
 app.get("/api/template/:templateId", async (req, res) => {
   if (req.params.templateId) {
     try {
