@@ -41,13 +41,9 @@ app.get('/test-get-alltemplates', (req, res) => {
 });
 // test get specific template
 app.get('/test-get-template/:template', (req, res) => {
-  try {
     axios.get(`https://api.printful.com/product-templates/@${req.params.template}`, {headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
-    .then(resp => {res.json(resp.data);});
-  }
-  catch (err) {console.log(err);}
+    .then(resp => {res.json(resp.data)}).catch(err => console.log(err))
 });
-// test get gt-data
 app.get('/test-get-gt/:gt', (req, res) => {
   try {
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gt}`, {headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
@@ -77,15 +73,7 @@ app.get('/api/gtkey/:gtkey', (req, res) => {
   }
 });
 
-// TEMPLATE printful Remove
-// app.get("/api/deletetemplate/:templateId", (req, res) => {
-//   try {
-//     axios.delete(`https://api.printful.com/product-templates/@${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID} })
-//     console.log(`TEMPLATE-delete: Completed`);
-//   } catch (err) {console.log(err)}
-// });
-
-// NONCES open customizer
+// NONCES open customizer    (:userId - numberSyncProd like 308)
 app.get("/api/nonces/:userId", (req, res) => {
   try {
     axios.post("https://api.printful.com/embedded-designer/nonces", {"external_product_id": `${req.params.userId}`}, {headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}` }})
@@ -125,7 +113,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
       }
       if (respImg.data.result.status == 'completed') {
         createImageCloud(mockups, printfiles);
-        console.log(`CLOUDINARY: GT-COMPLETED-immediately: new-IMAGE/FOLDER-created`)
+        console.log(`CLOUDINARY: GT-COMPLETED-immediately: new-IMAGE/FOLDER-created`);
         // delete OLD product from cloudinary
         if (new_old == 'old' && gtUrl !== false) {
           cloudinary.api.delete_resources_by_prefix(`customers/${customer}/${gtUrl}`)
@@ -173,42 +161,41 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
 });
 
 // TEMPLATE-create, MOCKUP-return-GT.
-app.get("/api/template/:templateId", async (req, res) => {
+app.get("/api/template/:templateId/:external_product_id", async (req, res) => {
   if (req.params.templateId) {
-    try {
-      await axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID} })
-      .then((resTemplates) => {
-        axios.post(
-          `https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
-          { "variant_ids": resTemplates.data.result.available_variant_ids, "format": "jpg", "product_template_id": resTemplates.data.result.id },
-          { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID } }
-        )
-        .then( async (respGt) => {
-          if (respGt.data.result.status == 'completed') {
-            console.log(`MOCKUP-created, GT-COMPLETED-immediately`);
-            return res.json(respGt.data.result.task_key);
-          } else {
-            console.log(`MOCKUP-created, GT-PENDING`)
-            try {
-              // sending several queries in succession
-              let gtResult = "";
-              do {
-                const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${respGt.data.result.task_key}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
-                resjson = await res.json();
-                gtResult = await resjson.result.task_key;
-              } while (resjson.result.status == 'completed');
-              console.log(`MOCKUP-created, GT-COMPLETED-delayed`);  
-              res.json(gtResult);
-            } catch (err) {console.log(err)}
-          }
-          
-        })
+    await axios.get(`https://api.printful.com/product-templates/${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID} })
+    .then((resTemplates) => {
+      axios.post(
+        `https://api.printful.com/mockup-generator/create-task/${req.params.external_product_id}`, 
+        { "variant_ids": resTemplates.data.result.available_variant_ids, "format": "jpg", "product_template_id": resTemplates.data.result.id },
+        { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID } }
+      )
+      .then( async (respGt) => {
+        if (respGt.data.result.status == 'completed') {
+          console.log(`MOCKUP-created, GT-COMPLETED-immediately`);
+          return res.json(respGt.data.result.task_key);
+        } else {
+          console.log(`MOCKUP-created, GT-PENDING`)
+          try {
+            // sending several queries in succession
+            let gtResult = "";
+            do {
+              const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${respGt.data.result.task_key}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
+              resjson = await res.json();
+              gtResult = await resjson.result.task_key;
+            } while (resjson.result.status == 'completed');
+            console.log(`MOCKUP-created, GT-COMPLETED-delayed`);  
+            res.json(gtResult);
+          } catch (err) {console.log(err)}
+        }
+        
       })
-    } catch (err) {console.log(err) }
+    }).catch(err => console.log(err))
+
   }
 });
 
-// IMAGE-PDP from TEMPLATE
+// IMAGE-PDP from TEMPLATE   ?????
 app.get('/api/image/:prodId', (req, res) => {
   if (req.params.prodId) {
     try {
@@ -418,6 +405,7 @@ app.post('/api/publiccollection', (req, res) => {
         "type": "single_line_text_field"
       }
     };
+    
     axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
     .then(() => {
       const headers = { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY, 'Content-Type': 'application/json' };
@@ -429,6 +417,7 @@ app.post('/api/publiccollection', (req, res) => {
           "type": "single_line_text_field"
         }
       };
+      // console.log(body)
       axios.post('https://all-u-sportswear.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
       .then((response) => {
         res.json(response.data);
@@ -461,7 +450,6 @@ app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
 });
 
-// test
 
 app.listen(port);
 module.exports = app;
