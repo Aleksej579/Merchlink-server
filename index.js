@@ -156,7 +156,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
           }
         } catch (err) {console.log(err)}
       }
-    }).then(() => { res.json(gt) });
+    })
   } catch (err) {console.log(err)}
 });
 
