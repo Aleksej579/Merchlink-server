@@ -44,6 +44,12 @@ app.get('/test-get-template/:template', (req, res) => {
     axios.get(`https://api.printful.com/product-templates/@${req.params.template}`, {headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
     .then(resp => {res.json(resp.data)}).catch(err => console.log(err))
 });
+// Get templates If Error from Printful
+app.get('/printful-templates', (req, res) => {
+    axios.get(`https://api.printful.com/product-templates`, {headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
+    .then(resp => {res.json(resp.data)}).catch(err => console.log(err))
+});
+
 app.get('/test-get-gt/:gt', (req, res) => {
   try {
     axios.get(`https://api.printful.com/mockup-generator/task?task_key=${req.params.gt}`, {headers: { Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
@@ -59,7 +65,7 @@ app.get('/test-get-variantid/:variantid', (req, res) => {
   }
   catch (err) {console.log(err);}
 });
-
+  
 // IMAGES for COLECTIONS
 app.get('/api/gtkey/:gtkey', (req, res) => {
   if (req.params.gtkey !== "undefined") {
