@@ -208,7 +208,7 @@ app.get('/api/image/:prodId', (req, res) => {
       axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
       .then((resp) => { 
         console.log(`DPP create-IMAGE`, resp.data.result.mockup_file_url);
-        res.json(resp.data.result.mockup_file_url) 
+        res.send(resp.data.result.mockup_file_url) 
       });
     } catch (err) { console.log(err) }
   }
