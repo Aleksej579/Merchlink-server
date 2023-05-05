@@ -206,8 +206,12 @@ app.get('/api/image/:prodId', (req, res) => {
   if (req.params.prodId) {
       axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
       .then((resp) => { 
-        console.log(`DPP create-IMAGE`, resp.data.result.mockup_file_url);
-        res.send(resp.data.result.mockup_file_url) 
+        if (!resp.statusCode == 404) {
+          console.log(`DPP create-IMAGE`, resp.data.result.mockup_file_url);
+          res.send(resp.data.result.mockup_file_url) 
+        } else {
+          console.log(`404...`)
+        }
       }).catch(err => console.log(err))
   }
 });
