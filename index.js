@@ -209,7 +209,7 @@ app.get('/api/image/:prodId', (req, res) => {
       {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 
       'X-PF-Store-ID': process.env.STORE_ID }
       }
-    ).status == 404) {
+    ).status === 500) {
 
       
       axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
