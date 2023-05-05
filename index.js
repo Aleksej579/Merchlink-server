@@ -204,15 +204,26 @@ app.get("/api/template/:templateId/:external_product_id", async (req, res) => {
 // IMAGE-PDP from TEMPLATE   ?????
 app.get('/api/image/:prodId', (req, res) => {
   if (req.params.prodId) {
+
+    if (axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}).status === 200) {
+
+      
       axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
       .then((resp) => { 
-        if (!resp.statusCode == 404) {
-          console.log(`DPP create-IMAGE`, resp.data.result.mockup_file_url);
-          res.send(resp.data.result.mockup_file_url) 
-        } else {
-          console.log(`404...`)
-        }
+        console.log(`DPP create-IMAGE`, resp.data.result.mockup_file_url);
+        res.send(resp.data.result.mockup_file_url) 
       }).catch(err => console.log(err))
+
+
+    } else {
+
+      axios.get(`https://api.printful.com/product-templates/`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
+      .then((resp) => { 
+        console.log(`DPP create-IMAGE`, resp.data.result.items[0].mockup_file_url);
+        res.send(resp.data.result.items[0].mockup_file_url) 
+      }).catch(err => console.log(err))
+
+    }
   }
 });
 
