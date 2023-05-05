@@ -205,7 +205,11 @@ app.get("/api/template/:templateId/:external_product_id", async (req, res) => {
 app.get('/api/image/:prodId', (req, res) => {
   if (req.params.prodId) {
 
-    if (axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }}).status === 200) {
+    if (axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, 
+      {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 
+      'X-PF-Store-ID': process.env.STORE_ID }
+      }
+    ).status == 404) {
 
       
       axios.get(`https://api.printful.com/product-templates/@${req.params.prodId}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }})
