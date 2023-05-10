@@ -115,7 +115,7 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
             resource_type: "image",
             public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
             overwrite: true,
-            width: 700
+            width: 1000
           });
         });
       }
