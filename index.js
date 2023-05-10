@@ -106,14 +106,16 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
           cloudinary.uploader.upload(element.mockup_url, {
             resource_type: "image",
             public_id: `customers/${req.params.customer}/${gt}/image-${index}`,
-            overwrite: true
+            overwrite: true,
+            width: 700
           });
         });
         printfiles.forEach((element, index) => {
           cloudinary.uploader.upload(element.url, {
             resource_type: "image",
             public_id: `customers/${req.params.customer}/${gt}/image__printfiles-${index}`,
-            overwrite: true
+            overwrite: true,
+            width: 700
           });
         });
       }
