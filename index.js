@@ -471,6 +471,14 @@ app.get('*', (req, res) => {
   res.status(500).json({ message: "error" })
 });
 
-
 app.listen(port);
 module.exports = app;
+
+
+// cloudinary = 1 gb;
+// 1 image = 50kb;
+// 1 prod = 5 img = 250kb;
+// 1 user = 50 prod = 12500kb;
+// 100 users = 5000 = 1250000kb = 1.25 GB
+
+// 100 users - 50 prod - 5 img.
