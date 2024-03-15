@@ -30,6 +30,9 @@ app.use(fileupload({
 app.get("/", (req, res) => {
   res.send('Server!');
 });
+// app.get("/json", (req, res) => {
+//   res.json({"test": true});
+// });
 
 // test get all template
 app.get('/test-get-alltemplates', (req, res) => {
@@ -392,7 +395,7 @@ app.post('/api/namecoll', (req, res) => {
   try {
     const customerId = req.body.userid;
     const nameColl = req.body.newName;
-    axios.get(`https://merch-link.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY}})
+    axios.get(`https://merch-link.myshopify.com/admin/api/2024-01/customers/${customerId}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
     .then((response) => {
       const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
       const reg = /#(.*)/;
@@ -406,11 +409,11 @@ app.post('/api/namecoll', (req, res) => {
           "type": "single_line_text_field"
         }
       };
-      axios.post(`https://merch-link.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
+      axios.post(`https://merch-link.myshopify.com/admin/api/2024-01/customers/${customerId}/metafields.json`, body, { headers })
       .then((response) => {
         res.json(response.data);
-      });
-    })
+      }).catch(function (error) {console.log(error.toJSON())});
+    }).catch(function (error) {console.log(error.toJSON())});
   } catch (err) { console.log(err) }
 });
 
