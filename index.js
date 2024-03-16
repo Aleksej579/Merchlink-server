@@ -401,9 +401,10 @@ app.post('/api/namecoll', (req, res) => {
       const reg = /#(.*)/;
       const newData = existData.replace(reg, `#${nameColl}`);
       const headers = { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY, 'Content-Type': 'application/json' };
+      // console.log();
       const body = {
         "metafield": {
-          "namespace": "customer_id",
+          "namespace": "custom",
           "key": "collection_name",
           "value": `${newData}`,
           "type": "single_line_text_field"
