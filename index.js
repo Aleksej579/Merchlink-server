@@ -172,33 +172,37 @@ app.get("/api/makeimagetocloudinary/:customer/:gtnumber/:new_old/:gtUrl", (req, 
 // TEMPLATE-create, MOCKUP-return-GT.
 app.get("/api/template/:templateId/:external_product_id", async (req, res) => {
   if (req.params.templateId) {
-    await axios.get(`https://api.printful.com/product-templates/${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID} })
+    await axios.get(`https://api.printful.com/product-templates/@${req.params.templateId}`, { headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID} })
     .then((resTemplates) => {
       axios.post(
-        `https://api.printful.com/mockup-generator/create-task/${req.params.external_product_id}`, 
-        { "variant_ids": resTemplates.data.result.available_variant_ids, "format": "jpg", "product_template_id": resTemplates.data.result.id },
-        { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID } }
+        // `https://api.printful.com/mockup-generator/create-task/${req.params.external_product_id}`, 
+        `https://api.printful.com/mockup-generator/create-task/${req.params.templateId}`, 
+          { "variant_ids": resTemplates.data.result.available_variant_ids, "format": "jpg", "product_template_id": resTemplates.data.result.id },
+          { headers: { 'Authorization': `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID } }
         )
         .then( async (respGt) => {
-        if (respGt.data.result.status == 'completed') {
-          console.log(`MOCKUP-created, GT-COMPLETED-immediately`);
-          return res.json(respGt.data.result.task_key);
-        } else {
-          console.log(`MOCKUP-created, GT-PENDING`)
-          try {
-            // sending several queries in succession
-            let gtResult = "";
-            do {
-              const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${respGt.data.result.task_key}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
-              resjson = await res.json();
-              gtResult = await resjson.result.task_key;
-            } while (resjson.result.status == 'completed');
-            console.log(`MOCKUP-created, GT-COMPLETED-delayed`);  
-            res.json(gtResult);
-          } catch (err) {
-            console.log(err)}
-        }
-        
+          if (respGt.data.result.status == 'completed') {
+            console.log(`MOCKUP-created, GT-COMPLETED-immediately`);
+            return res.json(respGt.data.result.task_key);
+          } else {
+            console.log(`MOCKUP-created, GT-PENDING`)
+            try {
+              // sending several queries in succession
+              let gtResult = "";
+              do {
+                const res = await fetch(`https://api.printful.com/mockup-generator/task?task_key=${respGt.data.result.task_key}`, {headers: {Authorization: `Bearer ${process.env.TOKEN_PRINTFUL}`, 'X-PF-Store-ID': process.env.STORE_ID }});
+                resjson = await res.json();
+                gtResult = await resjson.result.task_key;
+              } while (resjson.result.status == 'completed');
+              console.log(`MOCKUP-created, GT-COMPLETED-delayed`);  
+              res.json(gtResult);
+            } catch (err) {
+              console.log(err)
+            }
+          }
+      }).catch(err => {
+        console.log("1");
+        console.log(err)
       })
     }).catch(err => {
       console.log(err)
