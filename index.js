@@ -332,7 +332,7 @@ app.post('/api/orderprintful', async (req, res) => {
 app.post('/api/sendmetafield', (req, res) => {
   try {
     const customerId = req.body.metafield.namespace;
-    axios.get(`https://merch-link.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
+    axios.get(`https://merch-link.myshopify.com/admin/api/2024-01/customers/${customerId}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
     .then((response) => {
       let oldGtkey = req.body.metafield.oldgt;
       let currentMetafield = response.data.metafields[0]?response.data.metafields[0].value:'#My collection';
@@ -340,14 +340,14 @@ app.post('/api/sendmetafield', (req, res) => {
       const headers = { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY, 'Content-Type': 'application/json' };
       const body = {
         "metafield": {
-          "namespace": "customer_id",
+          "namespace": "custom",
           "key": "collection_name",
           "value": `${req.body.metafield.value},${newMetafield}`,
           "type": "single_line_text_field"
         }
       };
       try {
-        axios.post(`https://merch-link.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers })
+        axios.post(`https://merch-link.myshopify.com/admin/api/2024-01/customers/${customerId}/metafields.json`, body, { headers })
         .then((response) => {
           console.log(`METAFIELDS: create|update`);
           res.json(response.data);
@@ -364,7 +364,7 @@ app.post('/api/changemetafield', (req, res) => {
     const product_template = req.body.product_template;
     const product_template_gt = req.body.product_template_gt;
     // get current data from metafield shopify
-    axios.get(`https://merch-link.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
+    axios.get(`https://merch-link.myshopify.com/admin/api/2024-01/customers/${customerId}/metafields.json`, { headers: { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY }})
     .then((response) => {
       // send update data to metafield shopify
       const existData = response.data.metafields[0]?response.data.metafields[0].value:'';
@@ -372,13 +372,13 @@ app.post('/api/changemetafield', (req, res) => {
       const headers = { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY, 'Content-Type': 'application/json' };
       const body = {
         "metafield": {
-          "namespace": "customer_id",
+          "namespace": "custom",
           "key": "collection_name",
           "value": `${newData}`,
           "type": "single_line_text_field"
         }
       };
-      axios.post(`https://merch-link.myshopify.com/admin/api/2022-07/customers/${customerId}/metafields.json`, body, { headers });
+      axios.post(`https://merch-link.myshopify.com/admin/api/2024-01/customers/${customerId}/metafields.json`, body, { headers });
       console.log(`METAFIELDS: remove-product`);
       // delete image & folder on cloudinary after delete product (x)
       if (customerId && product_template_gt !== 'undefined') {
@@ -436,7 +436,7 @@ app.post('/api/publiccollection', (req, res) => {
       }
     };
     
-    axios.post('https://merch-link.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
+    axios.post('https://merch-link.myshopify.com/admin/api/2024-01/metafields.json', body, { headers })
     .then(() => {
       const headers = { 'X-Shopify-Access-Token': process.env.ACCESS_TOKEN_SHOPIFY, 'Content-Type': 'application/json' };
       const body = {
@@ -448,7 +448,7 @@ app.post('/api/publiccollection', (req, res) => {
         }
       };
       // console.log(body)
-      axios.post('https://merch-link.myshopify.com/admin/api/2022-10/metafields.json', body, { headers })
+      axios.post('https://merch-link.myshopify.com/admin/api/2024-01/metafields.json', body, { headers })
       .then((response) => {
         res.json(response.data);
       });
@@ -468,7 +468,7 @@ app.post('/api/logocollection/:userId', (req, res) => {
         "type": "single_line_text_field"
       }
     };
-    axios.post(`https://merch-link.myshopify.com/admin/api/2022-07/customers/${req.params.userId}/metafields.json`, body, { headers })
+    axios.post(`https://merch-link.myshopify.com/admin/api/2024-01/customers/${req.params.userId}/metafields.json`, body, { headers })
       .then((response) => {
         res.json(response.data);
       });
