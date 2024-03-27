@@ -201,13 +201,11 @@ app.get("/api/template/:templateId/:external_product_id", async (req, res) => {
             }
           }
       }).catch(err => {
-        console.log("1");
         console.log(err)
       })
     }).catch(err => {
       console.log(err)
     })
-
   }
 });
 
