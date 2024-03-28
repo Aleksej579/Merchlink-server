@@ -9,6 +9,19 @@ const fileupload = require('express-fileupload');
 const fetch = require('node-fetch');
 const fs = require('fs');
 
+//for .env file
+// #shopify
+// ACCESS_TOKEN_SHOPIFY=...
+
+// #cloudinary
+// CLOUD_NAME=...
+// API_KEY=...
+// API_SECRET=...
+
+// #printful
+// STORE_ID=...
+// TOKEN_PRINTFUL=...
+
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
